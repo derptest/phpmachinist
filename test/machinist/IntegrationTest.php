@@ -18,6 +18,10 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		\machinist\Machinist::reset();
+		$this->pdo->exec('DROP TABLE `stuff`;');
+		if (file_exists('test.db')) {
+			unlink('test.db');
+		}
 	}
 
 	public function testWeCanCreateOneStuff() {
