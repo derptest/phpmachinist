@@ -1,6 +1,7 @@
 <?php
 namespace machinist;
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'Blueprint.php');
+require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'relationship'.DIRECTORY_SEPARATOR.'Relationship.php');
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'driver'.DIRECTORY_SEPARATOR.'Store.php');
 require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'driver'.DIRECTORY_SEPARATOR.'SqlStore.php');
 
@@ -72,6 +73,17 @@ class Machinist {
 		}
 
 		return $bp;
+	}
+
+	public static function Relationship($bp) {
+		$me = self::instance();
+		if (is_string($bp)) {
+			$bp = $me->getBlueprint($bp);
+		}
+		if (!$bp instanceof \machinist\Blueprint) {
+			throw new \InvalidArgumentException("Invalid blue print {$bp}");
+		}
+		return new \machinist\relationship\Relationship($bp);
 	}
 
 	public static function Store(Store $store, $name = 'default') {
