@@ -22,7 +22,7 @@ some tables:
 	create table `box` ( 
 		`id` INTEGER PRIMARY KEY AUTOINCREMENT, 
 		`type` varchar(100) 
-	);
+  );
 
 
 	use machinist\Machinist;
