@@ -57,13 +57,20 @@ class Machinist {
 	 * will only be used in the case of a new blueprint.
 	 * @static
 	 * @param  $name
-	 * @param null $table
 	 * @param null $defaults
+ * 	 * @param null $table
 	 * @return Blueprint
 	 */
-	public static function Blueprint($name, $table = null, $defaults = null, $store='default') {
+	public static function Blueprint($name, $defaults = null, $table = null, $store='default') {
 		$me = self::instance();
 		$bp = $me->getBlueprint($name);
+
+		// for compatibility switch the arguments if they're provided backwards
+		if (!is_array($defaults) && is_array($table)) {
+			$b = $defaults;
+			$defaults = $table;
+			$table = $b;
+		}
 		if (!$bp instanceof \machinist\Blueprint) {
 			if (empty($table)) {
 				$table = $name;

@@ -5,10 +5,7 @@ use \machinist\driver\SqlStore;
 class IntegrationTest extends PHPUnit_Framework_TestCase {
 	private $pdo;
 	public function setUp() {
-		if (file_exists('test.db')) {
-			unlink('test.db');
-		}
-	    $this->pdo = new PDO("sqlite:test.db");
+	    $this->pdo = new PDO("sqlite::memory:");
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100), `box_id` INTEGER NULL DEFAULT NULL);');
 		$this->pdo->exec('create table `box` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100) );');
@@ -19,10 +16,8 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		\machinist\Machinist::reset();
-		//$this->pdo->exec('DROP TABLE `stuff`;');
-		if (file_exists('test.db')) {
-	//		unlink('test.db');
-		}
+		+$this->pdo->exec('DROP TABLE `stuff`;');
+
 	}
 
 	public function testWeCanCreateOneStuff() {
@@ -102,5 +97,14 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, $bp_row->box->id);
 		$this->assertEquals("round box", $bp_row->box->name);
 
+	}
+
+		public function testDefaultsTbaleToName() {
+		$bp_row = Machinist::Blueprint("stuff", array('name' => "whoa it might work"))
+			->make();
+		$query = $this->pdo->prepare('SELECT * from stuff where id = 1');
+		$query->execute(array());
+		$row = $query->fetch(PDO::FETCH_OBJ);
+		$this->assertEquals("whoa it might work", $row->name);
 	}
 }
