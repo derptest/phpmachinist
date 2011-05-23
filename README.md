@@ -18,11 +18,11 @@ some tables:
 		`id` INTEGER PRIMARY KEY AUTOINCREMENT, 
 		`name` varchar(100), 
 		`box_id` INTEGER NULL DEFAULT NULL
-  );
-	create table `box` ( 
-		`id` INTEGER PRIMARY KEY AUTOINCREMENT, 
-		`type` varchar(100) 
-  );
+    );
+    create table `box` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+        `type` varchar(100)
+    );
 
 
 	use machinist\Machinist;
@@ -32,7 +32,13 @@ some tables:
 	// make a blueprint for cardboardb oxes.. in the box table.. with a type..
 	$boxBlueprint = Machinist::Blueprint("cardboardbox", "box", array("type" => "cardboard"));
 
-	Machinist::Blueprint("crayon", "stuff", array("name" => "crayon", "box" => Machinist::Relationship($boxBlueprint)->local("box_id")));
+	Machinist::Blueprint("crayon",
+	    array(
+	        "name" => "crayon",
+	        "box" => Machinist::Relationship($boxBlueprint)->local("box_id"),
+	    ),
+	    "stuff");
 
 	$crayon = Machinist::Blueprint("crayon")->make();
+    $redCrayon = Machinist::Blueprint("crayon")->make(array("name" => "red crayon"));
 
