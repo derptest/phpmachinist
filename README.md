@@ -11,6 +11,9 @@ several projects:
 
 They're totally awesome. Just either in the wrong language, or didn't quite do what I wanted.
 
+## Install
+http://pear.something-awesome.com
+
 ## Examply thing
 some tables:
 
