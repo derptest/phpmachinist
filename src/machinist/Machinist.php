@@ -1,9 +1,9 @@
 <?php
 namespace machinist;
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'Blueprint.php');
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'relationship'.DIRECTORY_SEPARATOR.'Relationship.php');
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'driver'.DIRECTORY_SEPARATOR.'Store.php');
-require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'driver'.DIRECTORY_SEPARATOR.'SqlStore.php');
+require_once(__DIR__.DIRECTORY_SEPARATOR.'Blueprint.php');
+require_once(__DIR__.DIRECTORY_SEPARATOR.'relationship'.DIRECTORY_SEPARATOR.'Relationship.php');
+require_once(__DIR__.DIRECTORY_SEPARATOR.'driver'.DIRECTORY_SEPARATOR.'Store.php');
+require_once(__DIR__.DIRECTORY_SEPARATOR.'driver'.DIRECTORY_SEPARATOR.'SqlStore.php');
 
 use machinist\driver\Store;
 /**

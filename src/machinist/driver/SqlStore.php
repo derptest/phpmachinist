@@ -44,10 +44,10 @@ abstract class SqlStore implements Store {
 		$driver = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 		switch ($driver) {
 			case 'sqlite':
-				require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'Sqlite.php');
+				require_once(__DIR__.DIRECTORY_SEPARATOR.'Sqlite.php');
 				return new \machinist\driver\Sqlite($pdo);
 			case 'mysql':
-				require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'Mysql.php');
+				require_once(__DIR__.DIRECTORY_SEPARATOR.'Mysql.php');
 				return new \machinist\driver\Mysql($pdo);
 			default:
 				throw new \InvalidArgumentException("Unsupported PDO drive {$driver}.");

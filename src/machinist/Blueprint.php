@@ -44,27 +44,29 @@ class Blueprint {
 	private function buildData($overrides) {
 		$store = $this->machinist->getStore($this->store);
 		$data = array();
-		foreach ($this->defaults as $k => $v) {
-			if ($v instanceof Relationship) {
-				if(!array_key_exists($k, $overrides) || is_array($overrides[$k])) {
-					$d = array_key_exists($k, $overrides) && is_array($overrides[$k]) ? $overrides[$k] : array();
-					$new_row = $v->getBlueprint()->make($d);
-					$fk = $v->getForeign();
-					if (empty($fk)) {
-						$fk = $store->primaryKey($v->getBlueprint()->getTable());
+		if (!empty($this->defaults)) {
+			foreach ($this->defaults as $k => $v) {
+				if ($v instanceof Relationship) {
+					if(!array_key_exists($k, $overrides) || is_array($overrides[$k])) {
+						$d = array_key_exists($k, $overrides) && is_array($overrides[$k]) ? $overrides[$k] : array();
+						$new_row = $v->getBlueprint()->make($d);
+						$fk = $v->getForeign();
+						if (empty($fk)) {
+							$fk = $store->primaryKey($v->getBlueprint()->getTable());
+						}
+						$data[$k] = $new_row;
+						$data[$v->getLocal()] = $new_row->{$fk};
+						unset($overrides[$k]);
+					} elseif(is_string($overrides[$k])) {
+						$data[$k] = $store->find($v->getBlueprint()->getTable(), $overrides[$k]);
+						$data[$v->getLocal()] =  $overrides[$k];
+						unset($overrides[$k]);
 					}
-					$data[$k] = $new_row;
-					$data[$v->getLocal()] = $new_row->{$fk};
-					unset($overrides[$k]);
-				} elseif(is_string($overrides[$k])) {
-					$data[$k] = $store->find($v->getBlueprint()->getTable(), $overrides[$k]);
-					$data[$v->getLocal()] =  $overrides[$k];
-					unset($overrides[$k]);
+				}elseif (is_callable($v)) {
+					$data[$k] = call_user_func_array($v, array($data));
+				} else {
+					$data[$k] = $v;
 				}
-			}elseif (is_callable($v)) {
-				$data[$k] = call_user_func_array($v, array($data));
-			} else {
-				$data[$k] = $v;
 			}
 		}
 		foreach ($overrides as $k => $v) {

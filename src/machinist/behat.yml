@@ -1,0 +1,5 @@
+default:
+  paths:
+    steps:
+      - %behat.paths.features%/steps
+      - %%MACHINIST_DIR%%/machinist/behat/steps
