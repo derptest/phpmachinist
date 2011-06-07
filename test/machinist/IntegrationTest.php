@@ -31,7 +31,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
 	public function testReturnedDataHasPrimaryKeyCorrect() {
 		$bp_row = Machinist::Blueprint("test", "stuff", array('name' => "hello"))
 			->make();
-		$this->assertEquals(1, $bp_row->id);
+		$this->assertEquals(1, $bp_row->getId());
 	}
 
 	public function testOverridesOverride() {

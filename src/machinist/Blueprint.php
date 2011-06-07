@@ -17,24 +17,30 @@ class Blueprint {
 	}
 
 	public function make($overrides = array()) {
+
 		$data = $this->buildData($overrides);
 		$store = $this->machinist->getStore($this->store);
 		$insert_data = array_filter($data, function($i) {
 			return !(is_object($i) || is_array($i));
 		});
-		$id = $store->insert($this->table, $insert_data);
-		$new_row = $store->find($this->table, $id);
-		$ret = (object)$new_row;
+		$table = $this->getTable($data);
+		$id = $store->insert($table, $insert_data);
+		$new_row = $store->find($table, $id);
+		$machine = new \machinist\Machine($store, $table, $id, (array)$new_row);
+
 		$related = array_filter($data, function($i) { return is_object($i); });
 		foreach ($related as $k => $v) {
-			$ret->$k = $v;
+			$machine->set($k, $v);
 		}
-
-		return $ret;
+		return $machine;
 	}
 
-	public function getTable() {
-		return $this->table;
+	public function getTable($data = array()) {
+		if (is_callable($this->table)) {
+			return call_user_func_array($this->table, array($data));
+		} else {
+			return $this->table;
+		}
 	}
 
 	public function destroy() {
@@ -52,7 +58,7 @@ class Blueprint {
 						$new_row = $v->getBlueprint()->make($d);
 						$fk = $v->getForeign();
 						if (empty($fk)) {
-							$fk = $store->primaryKey($v->getBlueprint()->getTable());
+							$fk = $new_row->getIdColumn();
 						}
 						$data[$k] = $new_row;
 						$data[$v->getLocal()] = $new_row->{$fk};
