@@ -6,8 +6,8 @@ PACKAGE = []
 PACKAGE << "src/machinist"
 
 pearspec = {
-    :version => "0.0.1",
-    :stability => "beta",
+    :version => "0.0.2",
+    :stability => "stable",
     :name => "machinist",
     :channel => "pear.something-awesome.com",
     :summary => "PHP Test Fixtures",

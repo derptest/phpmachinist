@@ -54,9 +54,18 @@ class Machine implements \ArrayAccess,\IteratorAggregate {
 	}
 
 	public function getIterator() {
-		return new ArrayIterator($this->data);
+		return new \ArrayIterator($this->data);
 	}
 	public function set($k, $v) {
 		$this->offsetSet($k, $v);
 	}
+
+	public function toArray() {
+		$ret = array();
+		foreach ($this as $k => $v) {
+			$ret[$k] = $v instanceof self ? $v->toArray() : $v;
+		}
+		return $ret;
+	}
+
 }
