@@ -27,6 +27,18 @@ class Machinist {
 		return array_key_exists($name, $this->blueprints) ? $this->blueprints[$name] : null;
 	}
 
+	/**
+	 * Get all knows blueprints
+	 * @return array Key/value pair associative array of blueprint name and object
+	 */
+	public function getBlueprints() {
+		$return = array();
+		foreach ($this->blueprints as $key => $value) {
+			$return[$key] = $value;
+		}
+		return $return;
+	}
+
 	public function addStore(Store $store, $name) {
 		$this->stores[$name] = $store;
 	}

@@ -13,5 +13,12 @@ class MachinistTest extends PHPUnit_Framework_TestCase {
 		$bp2 = \machinist\Machinist::Blueprint("hello");
 		$this->assertNotSame($bp1, $bp2);
 	}
-}
 
+	public function testGetBlueprintsHasAll() {
+		$bp1 = \machinist\Machinist::Blueprint("hello1");
+		$bp2 = \machinist\Machinist::Blueprint("hello2");
+		$bps = \machinist\Machinist::instance()->getBlueprints();
+		$this->assertContains($bp1, $bps);
+		$this->assertContains($bp2, $bps);
+	}
+}
