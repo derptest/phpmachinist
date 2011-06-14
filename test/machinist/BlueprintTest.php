@@ -59,4 +59,19 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(true);
 
 	}
+
+	public function testWipeTellsStore() {
+		$table = 'test_table';
+		$bp = new Blueprint(
+			$this->machinist,
+			$table
+		);
+		
+		$bp->wipe(true);
+		Phake::verify($this->store)->wipe($table, true);
+
+		// I only need to Phake::verify; but, if we don't have an assertion, PHPUnit
+		// will cry
+		$this->assertTrue(true);
+	}
 }

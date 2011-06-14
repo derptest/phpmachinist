@@ -47,6 +47,18 @@ class Blueprint {
 		unset($this->machinist);
 	}
 
+	
+	/**
+	 * Wipe all data in the data store from this blueprint
+	 * @param bool $truncate Will perform wipe via truncate when true.
+	 * Defaults to false.  The actual action performed will be based on the wipe
+	 * method of a blueprint's store
+	 */
+	public function wipe($truncate = false) {
+		$this->machinist->getStore($this->store)->wipe($this->getTable(), $truncate);
+	}
+
+
 	private function buildData($overrides) {
 		$store = $this->machinist->getStore($this->store);
 		$data = array();

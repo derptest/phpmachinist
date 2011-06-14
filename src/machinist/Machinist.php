@@ -65,6 +65,18 @@ class Machinist {
 	}
 
 	/**
+	 * Wipe all data in the data store from all blueprints
+	 * @param bool $truncate Will perform wipe via truncate when true.
+	 * Defaults to false.  The actual action performed will be based on the wipe
+	 * method of a blueprint's store
+	 */
+	public function wipeAll($truncate = false) {
+		foreach ($this->blueprints as $blueprint) {
+			$blueprint->wipe($truncate);
+		}
+	}
+
+	/**
 	 * Will create a new blueprint if one does not exist with the provided name. Otherwise  the existing one will
 	 * be returned. If no table name is provided, the name of the blueprint is used as the name. The default fields
 	 * will only be used in the case of a new blueprint.

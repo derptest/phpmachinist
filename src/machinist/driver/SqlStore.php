@@ -11,6 +11,7 @@ abstract class SqlStore implements Store {
 	public function __construct(\PDO $pdo) {
 		$this->pdo = $pdo;
 	}
+
 	public function insert($table, $data) {
 		$query = 'INSERT INTO '.$table.' ('.join(',', array_keys($data)).') VALUES('.trim(str_repeat('?,', count($data)),',').')';
 		$stmt = $this->pdo()->prepare($query);
@@ -23,6 +24,21 @@ abstract class SqlStore implements Store {
 		$query = $this->pdo()->prepare('SELECT * from '.$table.' WHERE '.$primary_key.' = ?');
 		$query->execute(array($key));
 		return $query->fetch(\PDO::FETCH_OBJ);
+	}
+
+	/**
+	 * Wipe all data in the data store for the provided table
+	 * @param string $table Name of table to remove all data
+	 * @param bool $truncate Will use truncate to delete data from table when set
+	 * to true
+	 */
+	public function wipe($table, $truncate) {
+		if ($truncate) {
+			$query = 'TRUNCATE TABLE '.$table;
+		} else {
+			$query = 'DELETE FROM '.$table;
+		}
+		return $this->pdo->exec($query);
 	}
 
 	/**
