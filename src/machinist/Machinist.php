@@ -27,6 +27,18 @@ class Machinist {
 		return array_key_exists($name, $this->blueprints) ? $this->blueprints[$name] : null;
 	}
 
+	/**
+	 * Get all knows blueprints
+	 * @return array Key/value pair associative array of blueprint name and object
+	 */
+	public function getBlueprints() {
+		$return = array();
+		foreach ($this->blueprints as $key => $value) {
+			$return[$key] = $value;
+		}
+		return $return;
+	}
+
 	public function addStore(Store $store, $name) {
 		$this->stores[$name] = $store;
 	}
@@ -50,6 +62,18 @@ class Machinist {
 		}
 		unset($this->blueprints);
 		unset($this->connections);
+	}
+
+	/**
+	 * Wipe all data in the data store from all blueprints
+	 * @param bool $truncate Will perform wipe via truncate when true.
+	 * Defaults to false.  The actual action performed will be based on the wipe
+	 * method of a blueprint's store
+	 */
+	public function wipeAll($truncate = false) {
+		foreach ($this->blueprints as $blueprint) {
+			$blueprint->wipe($truncate);
+		}
 	}
 
 	/**

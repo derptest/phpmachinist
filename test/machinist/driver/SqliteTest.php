@@ -47,4 +47,22 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 		$row = $this->driver->find('stuff', $id);
 		$this->assertEquals("stupid", $row->name);
 	}
+
+	public function testEmptyNoTruncateDeletesRows() {
+		$id = $this->driver->insert('stuff', array('name' => 'stupid'));
+		$row = $this->driver->find('stuff', $id);
+		$this->assertNotEmpty($row);
+		$this->driver->wipe('stuff', false);
+		$row = $this->driver->find('stuff', $id);
+		$this->assertEmpty($row);
+	}
+
+	public function testEmptyTruncateDeletesRows() {
+		$id = $this->driver->insert('stuff', array('name' => 'stupid'));
+		$row = $this->driver->find('stuff', $id);
+		$this->assertNotEmpty($row);
+		$this->driver->wipe('stuff', true);
+		$row = $this->driver->find('stuff', $id);
+		$this->assertEmpty($row);
+	}
 }
