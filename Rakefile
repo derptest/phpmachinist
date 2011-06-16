@@ -6,7 +6,7 @@ PACKAGE = []
 PACKAGE << "src/machinist"
 
 pearspec = {
-    :version => "0.0.2",
+    :version => "0.0.3",
     :stability => "stable",
     :name => "machinist",
     :channel => "pear.something-awesome.com",
