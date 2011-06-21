@@ -29,6 +29,10 @@ class Blueprint {
 		return array_key_exists($field, $this->defaults) && $this->defaults[$field] instanceof Relationship;
 	}
 
+	public function getRelationship($field) {
+		return $this->hasRelationship($field) ? $this->defaults[$field] : false;
+	}
+
 	public function make($overrides = array()) {
 
 		$data = $this->buildData($overrides);
