@@ -94,4 +94,27 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 		Phake::verify($this->store)->insert(Phake::equalTo('test_table'), Phake::equalTo(array('related_id' => 36)));
 		$this->assertTrue(true);
 	}
+
+	public static function hasRelationshipProvider() {
+		return array (
+			array(true, "some_relationship"),
+			array(false, "another_column"),
+			array(false, "nonexistent_column")
+		);
+	}
+
+	/**
+	 * @dataProvider hasRelationshipProvider
+	 */
+	public function testHasRelationship($expected, $relationship) {
+		$bp = new Blueprint(
+			$this->machinist,
+			'test_table',
+			array(
+				'some_relationship' => Phake::mock('\machinist\relationship\Relationship'),
+				'another_column' => 1
+			)
+		);
+		$this->assertEquals($expected, $bp->hasRelationship($relationship));
+	}
 }

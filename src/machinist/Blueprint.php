@@ -20,6 +20,15 @@ class Blueprint {
 		$this->store = $store;
 	}
 
+	/**
+	 * Does this blueprint have a column with the provided name that is a relationship?
+	 * @param  $field
+	 * @return bool
+	 */
+	public function hasRelationship($field) {
+		return array_key_exists($field, $this->defaults) && $this->defaults[$field] instanceof Relationship;
+	}
+
 	public function make($overrides = array()) {
 
 		$data = $this->buildData($overrides);
