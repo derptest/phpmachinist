@@ -122,4 +122,33 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($wut->box->getId(), $stuff[0]->box->getId());
 
 	}
+
+	public function testFindOrCreateReturnsExitingObject() {
+		$box = Machinist::Blueprint("box", "box", array('name' => 'square box'));
+
+		$d = Machinist::Blueprint("stuff_in_a_box", "stuff", array(
+			'name' => "hello",
+			'box' => Machinist::Relationship($box)->local('box_id')
+		));
+		$wut = $d->make(array('name' => 'dumb', 'box' => array('name' => 'my container')));
+		$stuff = Machinist::Blueprint("stuff_in_a_box")->findOrCreate(array('name' => 'dumb'));
+		$this->assertInstanceOf('\machinist\Machine', $stuff);
+		$this->assertEquals($wut->getId(), $stuff->getId());
+		$this->assertEquals($wut->box->getId(), $stuff->box->getId());
+
+	}
+
+	public function testFindOrCreateMakesNewObject() {
+		$box = Machinist::Blueprint("box", "box", array('name' => 'square box'));
+
+		$d = Machinist::Blueprint("stuff_in_a_box", "stuff", array(
+			'name' => "hello",
+			'box' => Machinist::Relationship($box)->local('box_id')
+		));
+		$stuff = Machinist::Blueprint("stuff_in_a_box")->findOrCreate(array('name' => 'A New Name That Ihope is not there'));
+		$this->assertInstanceOf('\machinist\Machine', $stuff);
+		$this->assertTrue(is_numeric($stuff->getId()));
+		$this->assertEquals("A New Name That Ihope is not there", $stuff->name);
+
+	}
 }

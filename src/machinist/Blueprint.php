@@ -39,6 +39,28 @@ class Blueprint {
 		return $machine;
 	}
 
+	/**
+	 * Attempt to find an existing machine matching the data provided. If
+	 * one is not found, then create a new one with the provided data.
+	 * @param  $data
+	 * @return bool|Machine
+	 */
+	public function findOrCreate($data) {
+		$results = $this->find($data);
+		if (empty($results)) {
+			return $this->make($data);
+		} else {
+			return $results[0];
+		}
+	}
+
+	/**
+	 * Locate a single machine with the expected data. If anything but a single
+	 * row is returned, this will throw a \machinist\FindException
+	 * @throws FindException
+	 * @param  $data
+	 * @return
+	 */
 	public function findOne($data) {
 		$rows = $this->find($data);
 		$cnt = count($rows);
@@ -49,6 +71,13 @@ class Blueprint {
 			throw new FindException("{$cnt} rows received when one expected.");
 		}
 	}
+
+	/**
+	 * Attempt to find a machine by the provided data. An array of machine objects
+	 * will be returned.
+	 * @param  $data
+	 * @return array|bool
+	 */
 	public function find($data) {
 		$store = $this->machinist->getStore($this->store);
 		$table = $this->getTable($data);
