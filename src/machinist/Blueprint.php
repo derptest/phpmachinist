@@ -3,7 +3,10 @@ namespace machinist;
 
 use \machinist\relationship\Relationship;
 use \machinist\Machine;
- 
+
+class FindException extends \Exception {
+
+}
 class Blueprint {
 	private $table;
 	private $defaults;
@@ -34,6 +37,47 @@ class Blueprint {
 			$machine->set($k, $v);
 		}
 		return $machine;
+	}
+
+	public function findOne($data) {
+		$rows = $this->find($data);
+		$cnt = count($rows);
+		if ($cnt == 1) {
+			return $rows[0];
+		}
+		else {
+			throw new FindException("{$cnt} rows received when one expected.");
+		}
+	}
+	public function find($data) {
+		$store = $this->machinist->getStore($this->store);
+		$table = $this->getTable($data);
+		$pk = $store->primaryKey($table);
+		$return  = array();
+		$rows = $store->find($table, $data);
+		if (!is_array($rows)) {
+			$rows = array($rows);
+		}
+		if (is_array($this->defaults)) {
+			$relationships = array_filter($this->defaults, function($i) { return $i instanceof \machinist\relationship\Relationship; });
+		} else {
+			$relationships = false;
+		}
+		foreach ($rows as $row) {
+			$id = $row->{$pk};
+			$machine = new \machinist\Machine($store, $table, $id, (array)$row);
+			if (!empty($relationships)) {
+				foreach ($relationships as $k => $r) {
+					$local = $r->getLocal();
+					if (!empty($row->$local)) {
+						$machine->set($k, $r->getBlueprint()->findOne($row->$local));
+					}
+				}
+			}
+			$return[] = $machine;
+		}
+		return $return;
+
 	}
 
 	public function getTable($data = array()) {

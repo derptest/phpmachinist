@@ -19,11 +19,33 @@ abstract class SqlStore implements Store {
 		return $this->pdo->lastInsertId();
 	}
 
-	public function find($table, $key) {
+	public function find($table, $data) {
+		if (!is_array($data)) {
+			return $this->findByPrimarykey($table, $data);
+		} else {
+			return $this->findByColumnValues($table, $data);
+		}
+	}
+
+	public function findByColumnValues($table, $data) {
+		$where = array();
+		$values = array();
+		foreach ($data as $key => $v) {
+			$where[] = "$key = ?";
+			$values[] = $v;
+		}
+		$query = $this->pdo()->prepare('SELECT * from '.$table.' WHERE '.join(' AND ', $where));
+		$query->execute($values);
+		return $query->fetchAll(\PDO::FETCH_OBJ);
+
+	}
+
+	protected function findByPrimarykey($table, $key) {
 		$primary_key = $this->primaryKey($table);
 		$query = $this->pdo()->prepare('SELECT * from '.$table.' WHERE '.$primary_key.' = ?');
 		$query->execute(array($key));
 		return $query->fetch(\PDO::FETCH_OBJ);
+
 	}
 
 	/**

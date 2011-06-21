@@ -65,4 +65,11 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 		$row = $this->driver->find('stuff', $id);
 		$this->assertEmpty($row);
 	}
+
+	public function testLocatesByColumn() {
+		$id = $this->driver->insert('stuff', array('name' => 'stupid'));
+		$row = $this->driver->find('stuff', array('name' => 'stupid'));
+		$this->assertNotEmpty($row);
+		$this->assertEquals($row[0]->id, $id);
+	}
 }

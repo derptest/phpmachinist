@@ -107,4 +107,19 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
 		$row = $query->fetch(PDO::FETCH_OBJ);
 		$this->assertEquals("whoa it might work", $row->name);
 	}
+
+	public function testThatICanFindAnObject() {
+		$box = Machinist::Blueprint("box", "box", array('name' => 'square box'));
+
+		$d = Machinist::Blueprint("stuff_in_a_box", "stuff", array(
+			'name' => "hello",
+			'box' => Machinist::Relationship($box)->local('box_id')
+		));
+		$wut = $d->make(array('name' => 'dumb', 'box' => array('name' => 'my container')));
+		$stuff = Machinist::Blueprint("stuff_in_a_box")->find(array('name' => 'dumb'));
+		$this->assertInstanceOf('\machinist\Machine', $stuff[0]);
+		$this->assertEquals($wut->getId(), $stuff[0]->getId());
+		$this->assertEquals($wut->box->getId(), $stuff[0]->box->getId());
+
+	}
 }
