@@ -2,6 +2,7 @@
 namespace machinist;
 
 use \machinist\relationship\Relationship;
+use \machinist\Machine;
  
 class Blueprint {
 	private $table;
@@ -79,6 +80,14 @@ class Blueprint {
 						$data[$k] = $store->find($v->getBlueprint()->getTable(), $overrides[$k]);
 						$data[$v->getLocal()] =  $overrides[$k];
 						unset($overrides[$k]);
+					}elseif(array_key_exists($k, $overrides) && $overrides[$k] instanceof Machine) {
+						$fk = $v->getForeign();
+						if (empty($fk)) {
+							$fk = $overrides[$k]->getIdColumn();
+						}
+						$data[$k] = $overrides[$k];
+						$data[$v->getLocal()] = $overrides[$k]->{$fk};
+						unset($overrides[$k]);
 					}
 				}elseif (is_callable($v)) {
 					$data[$k] = call_user_func_array($v, array($data));
@@ -91,7 +100,7 @@ class Blueprint {
 
 			if (is_callable($v)) {
 				$data[$k] = call_user_func_array($v, array($data));
-			} else {
+			} elseif(!$v instanceof Machine) {
 				$data[$k] = $v;
 			}
 		}

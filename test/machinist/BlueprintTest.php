@@ -1,6 +1,7 @@
 <?php
 use \machinist\Machinist;
 use \machinist\Blueprint;
+use \machinist\relationship\Relationship;
 use \machinist\driver\Store;
 
 class BlueprintTest extends PHPUnit_Framework_TestCase {
@@ -72,6 +73,25 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 
 		// I only need to Phake::verify; but, if we don't have an assertion, PHPUnit
 		// will cry
+		$this->assertTrue(true);
+	}
+
+	public function testRelationshipCanBeOverridenWithMachine() {
+		$relationship = Phake::mock('\machinist\relationship\Relationship');
+		Phake::when($relationship)->getLocal()->thenReturn("related_id");
+
+		$bp = new Blueprint(
+			$this->machinist,
+			'test_table',
+			array(
+				'related' => $relationship
+			)
+		);
+		$machine = Phake::mock('\machinist\Machine');
+		Phake::when($machine)->getIdColumn()->thenReturn('my_id');
+		Phake::when($machine)->__get(Phake::anyParameters())->thenReturn(36);
+		$actual = $bp->make(array('related' => $machine));
+		Phake::verify($this->store)->insert(Phake::equalTo('test_table'), Phake::equalTo(array('related_id' => 36)));
 		$this->assertTrue(true);
 	}
 }
