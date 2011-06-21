@@ -5,7 +5,7 @@ use machinist\driver\SqlStore;
 /**
  * MySQL Specific store support.
  */
-class Mysql extends SqlStore implements Store {
+class Mysql extends SqlStore {
    	public function primaryKey($table) {
 		$stmt = $this->pdo()->query("SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY'");
 		$result = $stmt->fetch();

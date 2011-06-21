@@ -5,7 +5,7 @@ use machinist\driver\SqlStore;
 /**
  * SQLite Specific store support.
  */
-class Sqlite extends SqlStore implements Store {
+class Sqlite extends SqlStore {
 	public function primaryKey($table)
 	{
 		$stmt = $this->pdo()->prepare("SELECT * FROM sqlite_master WHERE type='table' AND name=:name");
