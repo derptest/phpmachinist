@@ -144,6 +144,17 @@ class Machinist {
 	}
 
 	/**
+	 *
+	 */
+	public static function wipe($bp = null, $truncate=false) {
+		if (is_null($bp) || $bp === true) {
+			self::instance()->wipeAll($truncate);
+		} elseif (self::instance()->getBlueprint($bp) !== null) {
+			self::instance()->getBlueprint($bp)->wipe($truncate);
+		}
+	}
+
+	/**
 	 * Recursively load all PHP files in a directory. Seems this  is common for Machinist projects
 	 * so I'm putting it here for convenience.
 	 * @static

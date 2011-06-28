@@ -38,4 +38,64 @@ class MachinistTest extends PHPUnit_Framework_TestCase {
 		// will cry
 		$this->assertTrue(true);
 	}
+
+	public function testStaticWipeAllCall() {
+		$bp1 = Phake::mock('\machinist\Blueprint');
+		$bp2 = Phake::mock('\machinist\Blueprint');
+		$machinist = \machinist\Machinist::instance();
+		$store = Phake::mock('\machinist\driver\Store');
+		$machinist->Store($store);
+		$machinist->addBlueprint('bp1', $bp1);
+		$machinist->addBlueprint('bp2', $bp2);
+		\machinist\Machinist::wipe();;
+
+		Phake::verify($bp1)->wipe(false);
+		Phake::verify($bp2)->wipe(false);
+		$this->assertTrue(true);
+	}
+
+	public function testStaticWipesOne() {
+		$bp1 = Phake::mock('\machinist\Blueprint');
+		$bp2 = Phake::mock('\machinist\Blueprint');
+		$machinist = \machinist\Machinist::instance();
+		$store = Phake::mock('\machinist\driver\Store');
+		$machinist->Store($store);
+		$machinist->addBlueprint('bp1', $bp1);
+		$machinist->addBlueprint('bp2', $bp2);
+		\machinist\Machinist::wipe("bp2");
+
+		Phake::verify($bp2)->wipe(false);
+		Phake::verify($bp1, Phake::never())->wipe(Phake::anyParameters());
+		$this->assertTrue(true);
+	}
+
+	public function testStaticWipeAllCallWithTruncate() {
+		$bp1 = Phake::mock('\machinist\Blueprint');
+		$bp2 = Phake::mock('\machinist\Blueprint');
+		$machinist = \machinist\Machinist::instance();
+		$store = Phake::mock('\machinist\driver\Store');
+		$machinist->Store($store);
+		$machinist->addBlueprint('bp1', $bp1);
+		$machinist->addBlueprint('bp2', $bp2);
+		\machinist\Machinist::wipe(true, true);
+
+		Phake::verify($bp1)->wipe(true);
+		Phake::verify($bp2)->wipe(true);
+		$this->assertTrue(true);
+	}
+
+	public function testStaticWipesOneWithTruncate() {
+		$bp1 = Phake::mock('\machinist\Blueprint');
+		$bp2 = Phake::mock('\machinist\Blueprint');
+		$machinist = \machinist\Machinist::instance();
+		$store = Phake::mock('\machinist\driver\Store');
+		$machinist->Store($store);
+		$machinist->addBlueprint('bp1', $bp1);
+		$machinist->addBlueprint('bp2', $bp2);
+		\machinist\Machinist::wipe("bp2", true);
+
+		Phake::verify($bp2)->wipe(true);
+		Phake::verify($bp1, Phake::never())->wipe(Phake::anyParameters());
+		$this->assertTrue(true);
+	}
 }
