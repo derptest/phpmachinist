@@ -8,8 +8,12 @@ use machinist\driver\SqlStore;
 class Mysql extends SqlStore {
    	public function primaryKey($table) {
 		$stmt = $this->pdo()->query("SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY'");
-		$result = $stmt->fetch();
-		return $result['Column_name'];
+		$results = array();
+		while ($row = $stmt->fetch(\PDO::FETCH_OBJ)) {
+			$results[] = $row->Column_name;
+		}
+
+		return count($results) == 0 ? false : count($results) == 1 ? array_pop($results) : $results;
 	}
 
     public function columns($table) {

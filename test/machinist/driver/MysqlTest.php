@@ -8,12 +8,21 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		$this->pdo = new PDO('mysql:host=localhost;dbname=machinist_test', 'root');
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$this->pdo->exec('DROP TABLE IF EXISTS `stuff`;');
 		$this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTO_INCREMENT, `name` varchar(100) );');
+		$this->pdo->exec('DROP TABLE IF EXISTS `some_stuff`;');
+		$this->pdo->exec('CREATE TABLE `some_stuff` (
+`some_id` int(10) unsigned NOT NULL,
+`stuff_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(100),
+PRIMARY KEY (`some_id`,`stuff_id`));');
 		$this->driver = SqlStore::fromPdo($this->pdo);
 	}
 
 	public function tearDown() {
 		$this->pdo->exec('DROP TABLE `stuff`;');
+		$this->pdo->exec('DROP TABLE `some_stuff`;');
 	}
 
 	public function testSqlStoreGetsInstance() {
@@ -66,5 +75,10 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 		$row = $this->driver->find('stuff', array('name' => 'stupid'));
 		$this->assertNotEmpty($row);
 		$this->assertEquals($row[0]->id, $id);
+	}
+
+	public function testFindCompoundPrimareyKey() {
+		$ids = $this->driver->primaryKey('some_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
 	}
 }

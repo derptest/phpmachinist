@@ -36,6 +36,6 @@ class MachinistTest extends PHPUnit_Framework_TestCase {
 
 		// I only need to Phake::verify; but, if we don't have an assertion, PHPUnit
 		// will cry
-			$this->assertTrue(true);
+		$this->assertTrue(true);
 	}
 }

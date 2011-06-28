@@ -117,4 +117,51 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 		);
 		$this->assertEquals($expected, $bp->hasRelationship($relationship));
 	}
+
+	public function testFindsByCompoundPrimaryKey() {
+		$bp = new Blueprint(
+			$this->machinist,
+			'test_table',
+			array(
+				'column1' => "hello",
+				'column2' => "dumb",
+			)
+		);
+		$expected = array('key1' => 8, 'key2' => 12, 'column1' => "hello", 'column2' => "dumb");
+		Phake::when($this->store)->insert(
+			Phake::equalTo("test_table"),
+			Phake::equalTo(array('column1' => "hello", 'column2' => "dumb", "key1" => 8, 'key2' => 12))
+		)->thenReturn(0);
+		Phake::when($this->store)->primaryKey("test_table")->thenReturn(array('key1','key2'));
+		Phake::when($this->store)->find(
+			Phake::equalTo("test_table"),
+			Phake::equalTo(array('key1' => 8, 'key2' => 12))
+		)->thenReturn(array($expected));
+
+		$actual = $bp->make(array('key1' => 8, 'key2' => 12));
+		$this->assertEquals($actual->toArray(), $expected);
+	}
+
+		public function testFindsByCompoundPrimaryKeyAndSequence() {
+		$bp = new Blueprint(
+			$this->machinist,
+			'test_table',
+			array(
+				'column1' => "hello",
+				'column2' => "dumb",
+			)
+		);
+		$expected = array('key1' => 8, 'key2' => 12, 'column1' => "hello", 'column2' => "dumb");
+		Phake::when($this->store)->insert(
+			Phake::equalTo("test_table"),
+			Phake::equalTo(array('column1' => "hello", 'column2' => "dumb", "key1" => 8))
+		)->thenReturn(12);
+		Phake::when($this->store)->primaryKey("test_table")->thenReturn(array('key1','key2'));
+		Phake::when($this->store)->find(
+			Phake::equalTo("test_table"),
+			Phake::equalTo(array('key1' => 8, 'key2' => 12))
+		)->thenReturn(array($expected));
+		$actual = $bp->make(array('key1' => 8, 'key2' => 12));
+		$this->assertEquals($actual->toArray(), $expected);
+	}
 }

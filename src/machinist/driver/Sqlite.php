@@ -10,13 +10,18 @@ class Sqlite extends SqlStore {
 	{
 		$stmt = $this->pdo()->prepare("SELECT * FROM sqlite_master WHERE type='table' AND name=:name");
         $stmt->execute(array(':name' => $table));
-		$result = $stmt->fetch();
-        $sql = $result['sql'];
+		$results = array();
+		foreach($stmt as $row) {
+			$sql = $row['sql'];
+			$matches = array();
 
-        $matches = array();
-        if (preg_match('/`*(\w+?)`*\s+\w+?\s+PRIMARY KEY/', $sql, $matches)) {
-			return $matches[1];
+			if (preg_match('/`*(\w+?)`*\s+\w+?\s+PRIMARY KEY/', $sql, $matches)) {
+				$results[] = $matches[1];
+			}elseif (preg_match('/PRIMARY KEY\s+\(([\w`,]+?)\)/', $sql, $matches)) {
+				$results = array_map(function($el) { return trim($el, '`'); }, explode(',', $matches[1]));
+			}
 		}
+		return count($results) == 0 ? false : count($results) == 1 ? array_pop($results) : $results;
 	}
 
 	public function columns($table) {

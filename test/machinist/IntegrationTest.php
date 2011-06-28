@@ -9,7 +9,11 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100), `box_id` INTEGER NULL DEFAULT NULL);');
 		$this->pdo->exec('create table `box` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100) );');
-
+		$this->pdo->exec('CREATE TABLE `some_stuff` (
+  			`some_id` int(10)  NOT NULL,
+  			`stuff_id` int(10)  NOT NULL,
+  			`name` VARCHAR(100),
+			PRIMARY KEY (`some_id`,`stuff_id`));');
 		\machinist\Machinist::Store(SqlStore::fromPdo($this->pdo));
 
 	}
@@ -150,5 +154,13 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(is_numeric($stuff->getId()));
 		$this->assertEquals("A New Name That Ihope is not there", $stuff->name);
 
+	}
+
+	public function testCreatingSomeStuffWithCompoundKey() {
+		$bp = Machinist::Blueprint("some_stuff", array('name' => "awesome"));
+		$d = $bp->make(array('some_id' => 1, 'stuff_id' => 2));
+		$this->assertEquals("awesome", $d->name);
+		$this->assertEquals(1, $d->some_id);
+		$this->assertEquals(2, $d->stuff_id);
 	}
 }

@@ -7,6 +7,9 @@ use \machinist\Machine;
 class FindException extends \Exception {
 
 }
+class MakeException extends \Exception {
+
+}
 class Blueprint {
 	private $table;
 	private $defaults;
@@ -42,7 +45,27 @@ class Blueprint {
 		});
 		$table = $this->getTable($data);
 		$id = $store->insert($table, $insert_data);
-		$new_row = $store->find($table, $id);
+		$pk = $store->primaryKey($table);
+		if (!is_array($pk)) {
+			$new_row = $store->find($table, $id);
+		} else {
+			$find_data = array();
+			foreach ($pk as $key) {
+				if (isset($insert_data[$key])) {
+					$find_data[$key] = $insert_data[$key];
+				} elseif ($id != 0) {
+					$find_data[$key] = $id;
+				} else {
+					throw new MakeException("Unable to locate created machine. Could not find value for primary key column $key in insert data.");
+				}
+			}
+			$new_rows = $store->find($table, $find_data);
+			if (is_array($new_rows) && count($new_rows) == 1) {
+				$new_row = $new_rows[0];
+			} else {
+				throw new MakeException("Found {count($new_rows)} rows when relocating data..");
+			}
+		}
 		$machine = new \machinist\Machine($store, $table, $id, (array)$new_row);
 
 		$related = array_filter($data, function($i) { return is_object($i); });
