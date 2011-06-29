@@ -169,5 +169,4 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 		$bp = new Blueprint($this->machinist, 'test_table', null);
 		$this->assertFalse($bp->hasRelationship("hello"));
 	}
-
 }
