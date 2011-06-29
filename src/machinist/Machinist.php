@@ -100,7 +100,7 @@ class Machinist {
 			if (empty($table)) {
 				$table = $name;
 			}
-			$bp = new \machinist\Blueprint($me, $table, $defaults, $store);
+			$bp = new \machinist\Blueprint($me, $table, is_array($defaults) ? $defaults : array(), $store);
 			self::instance()->addBlueprint($name, $bp);
 		}
 

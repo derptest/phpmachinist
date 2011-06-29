@@ -29,7 +29,7 @@ class Blueprint {
 	 * @return bool
 	 */
 	public function hasRelationship($field) {
-		return array_key_exists($field, $this->defaults) && $this->defaults[$field] instanceof Relationship;
+		return is_array($this->defaults) && array_key_exists($field, $this->defaults) && $this->defaults[$field] instanceof Relationship;
 	}
 
 	public function getRelationship($field) {

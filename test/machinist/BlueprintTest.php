@@ -142,7 +142,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($actual->toArray(), $expected);
 	}
 
-		public function testFindsByCompoundPrimaryKeyAndSequence() {
+	public function testFindsByCompoundPrimaryKeyAndSequence() {
 		$bp = new Blueprint(
 			$this->machinist,
 			'test_table',
@@ -164,4 +164,10 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 		$actual = $bp->make(array('key1' => 8, 'key2' => 12));
 		$this->assertEquals($actual->toArray(), $expected);
 	}
+
+	public function testHasRelationShipWithNoDefaults() {
+		$bp = new Blueprint($this->machinist, 'test_table', null);
+		$this->assertFalse($bp->hasRelationship("hello"));
+	}
+
 }
