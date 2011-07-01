@@ -2,6 +2,7 @@
 namespace machinist;
 require_once(__DIR__.DIRECTORY_SEPARATOR.'Blueprint.php');
 require_once(__DIR__.DIRECTORY_SEPARATOR.'Machine.php');
+require_once(__DIR__.DIRECTORY_SEPARATOR.'Error.php');
 require_once(__DIR__.DIRECTORY_SEPARATOR.'relationship'.DIRECTORY_SEPARATOR.'Relationship.php');
 require_once(__DIR__.DIRECTORY_SEPARATOR.'driver'.DIRECTORY_SEPARATOR.'Store.php');
 require_once(__DIR__.DIRECTORY_SEPARATOR.'driver'.DIRECTORY_SEPARATOR.'SqlStore.php');
@@ -70,9 +71,11 @@ class Machinist {
 	 * Defaults to false.  The actual action performed will be based on the wipe
 	 * method of a blueprint's store
 	 */
-	public function wipeAll($truncate = false) {
-		foreach ($this->blueprints as $blueprint) {
-			$blueprint->wipe($truncate);
+	public function wipeAll($truncate = false, array $exclude = array()) {
+		foreach ($this->blueprints as $name => $blueprint) {
+			if (!in_array($name, $exclude)) {
+				$blueprint->wipe($truncate);
+			}
 		}
 	}
 
@@ -144,12 +147,18 @@ class Machinist {
 	}
 
 	/**
+	 * Wipes blueprints specified in $bp or all blueprints if $b is true or null. If wiping all blueprints
+	 * you can exclude blueprints by passing them as an array of names into $exclude.
 	 *
+	 * @param array $exclude an array of blueprint names that should be excluded when wiping all blueprints
 	 */
-	public static function wipe($bp = null, $truncate=false) {
+	public static function wipe($bp = null, $truncate=false, array $exclude = array()) {
 		if (is_null($bp) || $bp === true) {
-			self::instance()->wipeAll($truncate);
+			self::instance()->wipeAll($truncate, $exclude);
 		} elseif (self::instance()->getBlueprint($bp) !== null) {
+			if (in_array($bp, $exclude)) {
+				throw new Error("Cannot wipe blueprint ($bp) when it is in excluded list.");
+			}
 			self::instance()->getBlueprint($bp)->wipe($truncate);
 		}
 	}

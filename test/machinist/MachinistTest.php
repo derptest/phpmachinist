@@ -98,4 +98,34 @@ class MachinistTest extends PHPUnit_Framework_TestCase {
 		Phake::verify($bp1, Phake::never())->wipe(Phake::anyParameters());
 		$this->assertTrue(true);
 	}
+	
+	public function testStaticWipeAllButExclude() {
+		$bp1 = Phake::mock('\machinist\Blueprint');
+		$bp2 = Phake::mock('\machinist\Blueprint');
+		$bp3 = Phake::mock('\machinist\Blueprint');
+		$machinist = \machinist\Machinist::instance();
+		$store = Phake::mock('\machinist\driver\Store');
+		$machinist->Store($store);
+		$machinist->addBlueprint('bp1', $bp1);
+		$machinist->addBlueprint('bp2', $bp2);
+		$machinist->addBlueprint('bp3', $bp3);
+		\machinist\Machinist::wipe(true, true, array('bp3'));
+
+		Phake::verify($bp1)->wipe(true);
+		Phake::verify($bp2)->wipe(true);
+		Phake::verify($bp3, Phake::never())->wipe(true);
+		$this->assertTrue(true);
+	}
+	
+	/**
+	 * @expectedException machinist\Error
+	 */
+	public function testStaticWipeOneAndExcludeErrors() {
+		$bp1 = Phake::mock('\machinist\Blueprint');
+		$machinist = \machinist\Machinist::instance();
+		$store = Phake::mock('\machinist\driver\Store');
+		$machinist->Store($store);
+		$machinist->addBlueprint('bp1', $bp1);
+		\machinist\Machinist::wipe('bp1', true, array('bp1'));
+	}
 }
