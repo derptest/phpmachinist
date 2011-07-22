@@ -163,4 +163,21 @@ class IntegrationTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(1, $d->some_id);
 		$this->assertEquals(2, $d->stuff_id);
 	}
+
+	public function testFindOneOrSomething() {
+		$bp = Machinist::Blueprint("some_stuff", array('name' => "awesome"));
+		$values = array('some_id' => 1, 'stuff_id' => 2);
+		$d = $bp->make($values);
+
+		$r = Machinist::Blueprint('some_stuff')->findOne($values);
+		$this->assertEquals($d->getId(), $r->getId());
+	}
+	public function testFindOrSomething() {
+		$bp = Machinist::Blueprint("some_stuff", array('name' => "awesome"));
+		$values = array('some_id' => 1, 'stuff_id' => 2);
+		$d = $bp->make($values);
+
+		$r = Machinist::Blueprint('some_stuff')->find($values);
+		$this->assertEquals($d->getId(), $r[0]->getId());
+	}
 }
