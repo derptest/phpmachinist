@@ -1,8 +1,10 @@
 <?php
 namespace machinist\behat;
 require_once(__DIR__.DIRECTORY_SEPARATOR.'functions.php');
+
 use Behat\Behat\Context\BehatContext,
-	Behat\Behat\Exception\PendingException;
+	Behat\Behat\Exception\PendingException,
+	Behat\Behat\Context\ClosuredContextInterface;
 use Behat\Gherkin\Node\TableNode;
 
 use \machinist\Machinist,
@@ -11,7 +13,7 @@ use \machinist\Machinist,
 
 use PDO;
 
-class MachinistContext extends BehatContext {
+class MachinistContext extends BehatContext implements ClosuredContextInterface {
 	private $machine;
 	public function __construct($parameters, $machine = null) {
 		if (is_null($machine)) {
@@ -50,26 +52,24 @@ class MachinistContext extends BehatContext {
 	}
 
 	/**
-	 *@Given /^there are no (\w+) machines$/
+	 * Returns array of step definition files (*.php).
+	 *
+	 * @return  array
 	 */
-	public function wipeOneMachines($machine) {
-		$this->getMachine()->wipe($machine, true);
+	function getStepDefinitionResources()
+	{
+		return array(
+			__DIR__.DIRECTORY_SEPARATOR.'steps'.DIRECTORY_SEPARATOR.'machinist_steps.php'
+		);
 	}
 
 	/**
-	 * @Given /^there are no machines$/
+	 * Returns array of hook definition files (*.php).
+	 *
+	 * @return  array
 	 */
-	public function wipeAll() {
-		$this->getMachine()->wipeAll(true);
-	}
-
-	/**
-	 *@Given /^the following (.+) exists:$/
-	 */
-	public function createMachinesStep($blueprint, $table = null) {
-		if (is_null($table)) {
-			$table = new TableNode();
-		}
-   		\machinist\behat\functions\createMachinesFromTable($this, $blueprint, $table);
+	function getHookDefinitionResources()
+	{
+		return array();
 	}
 }
