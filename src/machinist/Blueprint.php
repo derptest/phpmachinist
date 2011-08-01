@@ -66,7 +66,7 @@ class Blueprint {
 				throw new MakeException("Found {count($new_rows)} rows when relocating data..");
 			}
 		}
-		$machine = new \machinist\Machine($store, $table, $id, (array)$new_row);
+		$machine = new \machinist\Machine($store, $table, (array)$new_row);
 
 		$related = array_filter($data, function($i) { return is_object($i); });
 		foreach ($related as $k => $v) {
@@ -130,7 +130,7 @@ class Blueprint {
 		}
 		foreach ($rows as $row) {
 			$id = $row->{$pk};
-			$machine = new \machinist\Machine($store, $table, $id, (array)$row);
+			$machine = new \machinist\Machine($store, $table, (array)$row);
 			if (!empty($relationships)) {
 				foreach ($relationships as $k => $r) {
 					$local = $r->getLocal();

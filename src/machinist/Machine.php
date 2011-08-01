@@ -7,21 +7,40 @@ class Machine implements \ArrayAccess,\IteratorAggregate {
 	private $id;
 	private $data;
 
-	public function __construct(\machinist\driver\Store $store, $table, $id, $row_data) {
+	public function __construct(\machinist\driver\Store $store, $table, $row_data) {
 		$this->store = $store;
 		$this->table = $table;
-		$this->id = $id;
 		$this->data = $row_data;
 	}
 
 	public function getTable() {
 		return $this->table;
 	}
+	/**
+	 *Returns either the string if it's a single column as the primary key, Or it will return
+	 *an array of strings each representing one piece of a compound primary key.
+	 * @return string/array
+	 */
 	public function getIdColumn() {
 		return $this->store->primaryKey($this->getTable());
 	}
+	/**
+	 * This will return a single string if it's a simple prmary key or an associative
+	 * array when the table has a compound key. Each key in the array will be the
+	 * name of the column in the key, with the value representing the value of that column.
+	 * @return string|array
+	 */
 	public function getId() {
-		return $this->id;
+		$columns = $this->getIdColumn();
+		if (is_array($columns)) {
+			$return = array();
+			foreach ($columns as $key) {
+				$return[$key] = $this->offsetGet($key);
+			}
+			return $return;
+		} else {
+			return $this->offsetGet($columns);
+		}
 	}
 
 	public function offsetExists($offset) {
