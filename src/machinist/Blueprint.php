@@ -129,7 +129,6 @@ class Blueprint {
 			$relationships = false;
 		}
 		foreach ($rows as $row) {
-			$id = $row->{$pk};
 			$machine = new \machinist\Machine($store, $table, (array)$row);
 			if (!empty($relationships)) {
 				foreach ($relationships as $k => $r) {
