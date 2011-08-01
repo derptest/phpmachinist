@@ -24,4 +24,11 @@ class Mysql extends SqlStore {
         }
         return $columns;
     }
+
+	public function quoteTable($table) {
+		return '`'.$table.'`';
+	}
+	public function quoteColumn($column) {
+		return '`'.$column.'`';
+	}
 }

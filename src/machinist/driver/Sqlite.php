@@ -42,4 +42,10 @@ class Sqlite extends SqlStore {
 		return parent::wipe($table, false);
 	}
 
+	public function quoteTable($table) {
+		return '"'.$table.'"';
+	}
+	public function quoteColumn($column) {
+		return '"'.$column.'"';
+	}
 }

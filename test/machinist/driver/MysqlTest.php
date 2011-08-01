@@ -17,12 +17,16 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 `stuff_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `name` VARCHAR(100),
 PRIMARY KEY (`some_id`,`stuff_id`));');
+		$this->pdo->exec('DROP TABLE IF EXISTS `group`;');
+		$this->pdo->exec('create table `group` ( `id` INTEGER PRIMARY KEY AUTO_INCREMENT, `name` VARCHAR(255));');
+
 		$this->driver = SqlStore::fromPdo($this->pdo);
 	}
 
 	public function tearDown() {
 		$this->pdo->exec('DROP TABLE `stuff`;');
 		$this->pdo->exec('DROP TABLE `some_stuff`;');
+		$this->pdo->exec('DROP TABLE `group`;');
 	}
 
 	public function testSqlStoreGetsInstance() {
@@ -80,5 +84,16 @@ PRIMARY KEY (`some_id`,`stuff_id`));');
 	public function testFindCompoundPrimareyKey() {
 		$ids = $this->driver->primaryKey('some_stuff');
 		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+	}
+
+	public function testInsertingIntoGroup() {
+		$what = $this->driver->insert('group', array('name' => "Hello"));
+		$found = $this->driver->find('group', array('id' => $what));
+		$this->assertEquals("Hello", $found[0]->name);
+	}
+
+	public function testTruncatingGroup() {
+		$this->driver->wipe('group', true);
+		$this->assertTrue(true); // if we didn't die, all is well
 	}
 }

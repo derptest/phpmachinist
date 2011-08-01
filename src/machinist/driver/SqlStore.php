@@ -13,7 +13,9 @@ abstract class SqlStore implements Store {
 	}
 
 	public function insert($table, $data) {
-		$query = 'INSERT INTO '.$table.' ('.join(',', array_keys($data)).') VALUES('.trim(str_repeat('?,', count($data)),',').')';
+		$columns = array_map(array($this, 'quoteColumn'), array_keys($data));
+
+		$query = 'INSERT INTO '.$this->quoteTable($table).' ('.join(',', $columns).') VALUES('.trim(str_repeat('?,', count($data)),',').')';
 		$stmt = $this->pdo()->prepare($query);
 		$stmt->execute(array_values($data));
 		return $this->pdo->lastInsertId();
@@ -31,10 +33,10 @@ abstract class SqlStore implements Store {
 		$where = array();
 		$values = array();
 		foreach ($data as $key => $v) {
-			$where[] = "$key = ?";
+			$where[] = $this->quoteColumn($key)." = ?";
 			$values[] = $v;
 		}
-		$query = $this->pdo()->prepare('SELECT * from '.$table.' WHERE '.join(' AND ', $where));
+		$query = $this->pdo()->prepare('SELECT * from '.$this->quoteTable($table).' WHERE '.join(' AND ', $where));
 		$query->execute($values);
 		return $query->fetchAll(\PDO::FETCH_OBJ);
 
@@ -42,7 +44,7 @@ abstract class SqlStore implements Store {
 
 	protected function findByPrimarykey($table, $key) {
 		$primary_key = $this->primaryKey($table);
-		$query = $this->pdo()->prepare('SELECT * from '.$table.' WHERE '.$primary_key.' = ?');
+		$query = $this->pdo()->prepare('SELECT * from '.$this->quoteTable($table).' WHERE '.$this->quoteColumn($primary_key).' = ?');
 		$query->execute(array($key));
 		return $query->fetch(\PDO::FETCH_OBJ);
 
@@ -56,9 +58,9 @@ abstract class SqlStore implements Store {
 	 */
 	public function wipe($table, $truncate) {
 		if ($truncate) {
-			$query = 'TRUNCATE TABLE '.$table;
+			$query = 'TRUNCATE TABLE '.$this->quoteTable($table);
 		} else {
-			$query = 'DELETE FROM '.$table;
+			$query = 'DELETE FROM '.$this->quoteTable($table);
 		}
 		return $this->pdo->exec($query);
 	}
@@ -90,6 +92,12 @@ abstract class SqlStore implements Store {
 			default:
 				throw new \InvalidArgumentException("Unsupported PDO drive {$driver}.");
 		}
+	}
+
+	abstract public function quoteTable($table);
+	abstract public function quoteColumn($column);
+	public function quoteValue($value) {
+		return $this->pdo()->quote($value);
 	}
 
 }
