@@ -7,7 +7,7 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 	private $pdo;
 	public function setUp() {
 		$this->pdo = new PDO('mysql:host=localhost', 'root');
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->pdo->exec('CREATE DATABASE IF NOT EXISTS `machinist_test`;');
 		$this->pdo->exec('USE `machinist_test`;');
 		$this->pdo->exec('DROP TABLE IF EXISTS `stuff`;');
@@ -20,6 +20,9 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 PRIMARY KEY (`some_id`,`stuff_id`));');
 		$this->pdo->exec('DROP TABLE IF EXISTS `group`;');
 		$this->pdo->exec('create table `group` ( `id` INTEGER PRIMARY KEY AUTO_INCREMENT, `name` VARCHAR(255));');
+
+		$this->pdo->exec('DROP TABLE IF EXISTS `nopk`;');
+		$this->pdo->exec('create table `nopk` ( `id` INTEGER, `name` VARCHAR(255));');
 
 		$this->driver = SqlStore::fromPdo($this->pdo);
 	}
@@ -36,6 +39,10 @@ PRIMARY KEY (`some_id`,`stuff_id`));');
 
 	public function testGetPrimaryKey() {
 		$this->assertEquals('id', $this->driver->primaryKey('stuff'));
+	}
+
+	public function testGetPrimaryKeyNoKey() {
+		$this->assertEquals(false, $this->driver->primaryKey('nopk'));
 	}
 
 	public function testInsertReturnsKey() {
