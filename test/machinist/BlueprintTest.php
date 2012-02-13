@@ -38,8 +38,39 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 		$result = $bp->make();
 		$this->assertInstanceOf('\machinist\Machine', $result);
 		$this->assertEquals("test_table", $result->getTable());
-		$this->assertEquals('test_table_id', $result->getIdColumn());
 		$this->assertEquals(1, $result->getId());
+		$this->assertEquals('test1', $result->col1);
+		$this->assertEquals('test2', $result->col2);
+	}
+
+	public function testMakeOnTableWithNoPrimaryKeyProducesMachine() {
+		$bp = new Blueprint(
+			$this->machinist,
+			'test_table',
+			array(
+				'col1' => 'test1',
+				'col2' => 'test2'
+			)
+		);
+		Phake::when($this->store)
+			->primaryKey(Phake::equalTo("test_table"))
+			->thenReturn(false);
+		Phake::when($this->store)
+			->insert(Phake::equalTo("test_table"), Phake::equalTo(array('col1' => 'test1', 'col2' => 'test2')))
+			->thenReturn(0);
+		$expected = new stdClass();
+		$expected->test_table_id = 1;
+		$expected->col1 = "test1";
+		$expected->col2 = "test2";
+		Phake::when($this->store)
+			->find(Phake::equalTo("test_table"), Phake::equalTo(array('col1' => 'test1', 'col2' => 'test2')))
+			->thenReturn(array($expected));
+		Phake::when($this->store)
+			->columns(Phake::equalTo("test_table"))
+			->thenReturn(array('col1', 'col2'));
+		$result = $bp->make();
+		$this->assertInstanceOf('\machinist\Machine', $result);
+		$this->assertEquals("test_table", $result->getTable());
 		$this->assertEquals('test1', $result->col1);
 		$this->assertEquals('test2', $result->col2);
 	}
