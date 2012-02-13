@@ -45,3 +45,9 @@ some tables:
 	$crayon = Machinist::Blueprint("crayon")->make();
     $redCrayon = Machinist::Blueprint("crayon")->make(array("name" => "red crayon"));
 
+## Testing
+Testing of the source code can be done with the PHPUnit version 3.6 or better.
+
+To begin testing you must first add the dependencies by executing the "vendors" file.  This will place the all of the dependencies in the vendor directory.
+
+A default phpunit.xml is configured in the test directory.

@@ -6,9 +6,10 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 	private $driver;
 	private $pdo;
 	public function setUp() {
-		$this->pdo = new PDO('mysql:host=localhost;dbname=machinist_test', 'root');
+		$this->pdo = new PDO('mysql:host=localhost', 'root');
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+		$this->pdo->exec('CREATE DATABASE IF NOT EXISTS `machinist_test`;');
+		$this->pdo->exec('USE `machinist_test`;');
 		$this->pdo->exec('DROP TABLE IF EXISTS `stuff`;');
 		$this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTO_INCREMENT, `name` varchar(100) );');
 		$this->pdo->exec('DROP TABLE IF EXISTS `some_stuff`;');
