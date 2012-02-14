@@ -1,9 +1,13 @@
 <?php
 define('TEST_DIR', dirname(__FILE__));
 define('SRC_DIR', dirname(TEST_DIR).DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR);
+define('VENDOR_DIR', dirname(TEST_DIR).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR);
 require_once(SRC_DIR.'machinist'.DIRECTORY_SEPARATOR.'Machinist.php');
 require_once(SRC_DIR.'machinist'.DIRECTORY_SEPARATOR.'behat'.DIRECTORY_SEPARATOR.'functions.php');
 require_once('PHPUnit/Framework/Assert/Functions.php');
+
+$phake_dir = VENDOR_DIR.DIRECTORY_SEPARATOR.'phake'.DIRECTORY_SEPARATOR.'src';
+set_include_path(get_include_path() . PATH_SEPARATOR . $phake_dir);
 require_once('Phake.php');
 
 

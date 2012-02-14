@@ -17,12 +17,21 @@ class Machine implements \ArrayAccess,\IteratorAggregate {
 		return $this->table;
 	}
 	/**
-	 *Returns either the string if it's a single column as the primary key, Or it will return
-	 *an array of strings each representing one piece of a compound primary key.
+	 *Returns either the string if it's a single column as the primary key, or it will return
+	 * an array of strings each representing one piece of a compound primary key, or it will
+	 * return all columns if there is no primary key with the assumption that each row is unique.
 	 * @return string/array
 	 */
 	public function getIdColumn() {
-		return $this->store->primaryKey($this->getTable());
+		$key = $this->store->primaryKey($this->getTable());
+
+		// If there is no primary key, use all columns to try and determine
+		// uniqueness
+		if ($key === false) {
+			$key = $this->store->columns($this->getTable());
+		}
+
+		return $key;
 	}
 	/**
 	 * This will return a single string if it's a simple prmary key or an associative
