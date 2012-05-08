@@ -41,7 +41,9 @@ class MachinistContext extends BehatContext implements ClosuredContextInterface 
 			else {
 				$user = empty($db['user']) ? 'root' : $db['user'];
 				$password = empty($db['password']) ? null : $db['password'];
-				$store = SqlStore::fromPdo(new PDO($db['dsn'], $user, $password));
+				$pdo = new PDO($db['dsn'], $user, $password, array());
+				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$store = SqlStore::fromPdo($pdo);
 			}
 			$this->getMachine()->Store($store, $name);
 			if ((array_key_exists('default', $db) && $db['default']) || !$set_default) {

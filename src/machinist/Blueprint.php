@@ -46,6 +46,9 @@ class Blueprint {
 		$table = $this->getTable($data);
 		$id = $store->insert($table, $insert_data);
 		$pk = $store->primaryKey($table);
+		if ($pk === false) {
+			$pk = array_keys($insert_data);
+		}
 		if (!is_array($pk)) {
 			$new_row = $store->find($table, $id);
 		} else {
@@ -60,10 +63,11 @@ class Blueprint {
 				}
 			}
 			$new_rows = $store->find($table, $find_data);
-			if (is_array($new_rows) && count($new_rows) == 1) {
+			$row_count = count($new_rows);
+			if (is_array($new_rows) && $row_count == 1) {
 				$new_row = $new_rows[0];
 			} else {
-				throw new MakeException("Found {count($new_rows)} rows when relocating data..");
+				throw new MakeException("Found {$row_count} rows when relocating data. This is likely due to not having a primary key on table represented by the bluebrint.");
 			}
 		}
 		$machine = new \machinist\Machine($store, $table, (array)$new_row);

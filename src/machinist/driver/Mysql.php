@@ -13,7 +13,7 @@ class Mysql extends SqlStore {
 			$results[] = $row->Column_name;
 		}
 
-		return count($results) == 0 ? false : count($results) == 1 ? array_pop($results) : $results;
+		return count($results) == 0 ? false : (count($results) == 1 ? array_pop($results) : $results);
 	}
 
     public function columns($table) {

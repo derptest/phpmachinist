@@ -18,7 +18,7 @@
 	<whitelist>
 		<exclude>
 		</exclude>
-	    <directory>..</directory>
+		<directory>../src</directory>
 	</whitelist>
     </filter>
 </phpunit>

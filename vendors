@@ -1,0 +1,64 @@
+#!/usr/bin/env php
+<?php
+/*
+ * Updated to allow for mercurial and subversion repositories
+ * Adam Englander <adam.englander@dataxltd.com>
+ */
+
+$rootDir = __DIR__;
+$vendorDir = $rootDir . '/vendor';
+
+if (!is_dir($vendorDir)) {
+	mkdir($vendorDir, 0777, true);
+}
+
+$deps = parse_ini_file($rootDir . '/deps', true, INI_SCANNER_RAW);
+if (false === $deps) {
+	exit("The deps file is not valid ini syntax. Perhaps missing a trailing newline?\n");
+}
+foreach ($deps as $name => $dep) {
+	$dep = array_map('trim', $dep);
+
+
+	// install dir
+	$installDir = isset($dep['target']) ? $vendorDir . '/' . $dep['target'] : $vendorDir . '/' . $name;
+	if (in_array('--reinstall', $argv)) {
+		if (PHP_OS == 'WINNT') {
+			system(sprintf('rmdir /S /Q %s', escapeshellarg(realpath($installDir))));
+		} else {
+			system(sprintf('rm -rf %s', escapeshellarg($installDir)));
+		}
+	}
+
+	echo "> Installing/Updating $name\n";
+
+	// url
+	if (isset($dep['git'])) {
+		$url = $dep['git'];
+		// revision
+		if (isset($versions[$name])) {
+			$rev = $versions[$name];
+		} else {
+			$rev = isset($dep['version']) ? $dep['version'] : 'origin/HEAD';
+		}
+		$checkout = sprintf('git clone %s %s', escapeshellarg($url), escapeshellarg($installDir));
+		$change_version = sprintf('cd %s && git fetch origin && git reset --hard %s', escapeshellarg($installDir), escapeshellarg($rev));
+	} elseif (isset($dep['hg'])) {
+		if (isset($versions[$name])) {
+			$rev = $versions[$name];
+		} else {
+			$rev = isset($dep['version']) ? $dep['version'] : 'tip';
+		}
+		$checkout = sprintf('hg clone %s %s', escapeshellarg($dep['hg']), escapeshellarg($installDir));
+		$change_version = sprintf('cd %s && hg pull --update && hg up -C -r %s', escapeshellarg($installDir), escapeshellarg($rev));
+	}
+
+	if (!is_dir($installDir)) {
+		$tmpDir = substr($installDir, 0, strrpos($installDir, '/', 1));
+		if (!is_dir($tmpDir)) {
+			mkdir($tmpDir, 0755, true);
+		}
+		system($checkout);
+	}
+	system($change_version);
+}
