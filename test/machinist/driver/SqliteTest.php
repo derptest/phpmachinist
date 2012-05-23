@@ -19,6 +19,12 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
   			`stuff_id` int(10)  NOT NULL,
   			`name` VARCHAR(100),
 			PRIMARY KEY (`some_id`,`stuff_id`));');
+		$this->pdo->exec('DROP TABLE IF EXISTS `some_other_stuff`;');
+		$this->pdo->exec('CREATE TABLE `some_other_stuff` (
+  			`some_id` int(10)  NOT NULL,
+  			`stuff_id` int(10)  NOT NULL,
+  			`name` VARCHAR(100),
+			PRIMARY KEY( "some_id" , "stuff_id" ));');
 		$this->pdo->exec('create table `group` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` VARCHAR(255));');
 		$this->driver = SqlStore::fromPdo($this->pdo);
 	}
@@ -83,6 +89,11 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 
 	public function testFindCompoundPrimareyKey() {
 		$ids = $this->driver->primaryKey('some_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+	}
+
+	public function testFindCompoundPrimareyKeyAlternateQuotingAndSpacing() {
+		$ids = $this->driver->primaryKey('some_other_stuff');
 		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
 	}
 

@@ -17,8 +17,8 @@ class Sqlite extends SqlStore {
 
 			if (preg_match('/`*(\w+?)`*\s+\w+?\s+PRIMARY KEY/', $sql, $matches)) {
 				$results[] = $matches[1];
-			}elseif (preg_match('/PRIMARY KEY\s+\(([\w`,]+?)\)/', $sql, $matches)) {
-				$results = array_map(function($el) { return trim($el, '`'); }, explode(',', $matches[1]));
+			}elseif (preg_match('/PRIMARY KEY\s?\(([\w`",\s?]+?)\s?\)/', $sql, $matches)) {
+				$results = array_map(function($el) { return trim($el, '" `'); }, explode(',', $matches[1]));
 			}
 		}
 		return count($results) == 0 ? false : count($results) == 1 ? array_pop($results) : $results;
