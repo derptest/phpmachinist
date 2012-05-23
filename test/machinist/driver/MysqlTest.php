@@ -15,7 +15,7 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 		$this->pdo->exec('DROP TABLE IF EXISTS `some_stuff`;');
 		$this->pdo->exec('CREATE TABLE `some_stuff` (
 `some_id` int(10) unsigned NOT NULL,
-`stuff_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`stuff_id` int(10) unsigned NOT NULL,
 `name` VARCHAR(100),
 PRIMARY KEY (`some_id`,`stuff_id`));');
 		$this->pdo->exec('DROP TABLE IF EXISTS `group`;');
