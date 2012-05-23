@@ -14,6 +14,11 @@ They're totally awesome. Just either in the wrong language, or didn't quite do w
 ## Install
 http://pearhub.org/projects/machinist
 
+OR
+
+Add the package phpmachinist/phpmachinist to your composer.json
+For more information about Composer, please visit http://getcomposer.org
+
 ## Examply thing
 some tables:
 
@@ -48,6 +53,6 @@ some tables:
 ## Testing
 Testing of the source code can be done with the PHPUnit version 3.6 or better.
 
-To begin testing you must first add the dependencies by executing the "vendors" file.  This will place the all of the dependencies in the vendor directory.
+To begin testing you must first add the dependencies by performing a Composer install with the --dev parameter  This will place the all of the dependencies in the vendor directory.  For more information on performing a Composer install, please visit http://getcomposer.org/doc/00-intro.md#installation
 
-A default phpunit.xml is configured in the test directory.
+A default phpunit.xml.dist is configured in the test directory.  You can create your own phpunit.xml and it will be ignored by git.
