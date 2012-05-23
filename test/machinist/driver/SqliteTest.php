@@ -9,7 +9,7 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 		if (file_exists('test.db')) {
 			unlink('test.db');
 		}
-	    $this->pdo = new PDO("sqlite::memory:");
+	    $this->pdo = Phake::partialMock('PDO', "sqlite::memory:");
 //		$this->pdo = new PDO("sqlite:test.db");
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->pdo->exec('DROP TABLE IF EXISTS `stuff`;');
@@ -114,5 +114,21 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 	public function testTruncatingGroup() {
 		$this->driver->wipe('group', true);
 		$this->assertTrue(true); // if we didn't die, all is well
+	}
+
+	public function testPrimaryKeyCachesResult() {
+		$ids = $this->driver->primaryKey('some_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+		Phake::verifyNoFurtherInteraction($this->pdo);
+		$ids = $this->driver->primaryKey('some_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+	}
+
+	public function testColumns() {
+		$cols = $this->driver->columns('stuff');
+		$this->assertEquals(array('id', 'name'), $cols);
+		Phake::verifyNoFurtherInteraction($this->pdo);
+		$cols = $this->driver->columns('stuff');
+		$this->assertEquals(array('id', 'name'), $cols);
 	}
 }

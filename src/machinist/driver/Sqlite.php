@@ -6,31 +6,58 @@ use machinist\driver\SqlStore;
  * SQLite Specific store support.
  */
 class Sqlite extends SqlStore {
+	/**
+	 * Dictionary of primary keys for tables
+	 * @var array
+	 */
+	protected $key_dict;
+
+	/**
+	 * Dictionary of columns for tables
+	 * @var array
+	 */
+	protected $column_dict;
+
+	public function __construct(\PDO $pdo) {
+		parent::__construct($pdo);
+		$this->key_dict = array();
+		$this->column_dict = array();
+	}
+
 	public function primaryKey($table)
 	{
-		$stmt = $this->pdo()->prepare("SELECT * FROM sqlite_master WHERE type='table' AND name=:name");
-        $stmt->execute(array(':name' => $table));
-		$results = array();
-		foreach($stmt as $row) {
-			$sql = $row['sql'];
-			$matches = array();
+		if (!isset($this->key_dict[$table])) {
+			$stmt = $this->pdo()->prepare("SELECT * FROM sqlite_master WHERE type='table' AND name=:name");
+					$stmt->execute(array(':name' => $table));
+			$results = false;
+			foreach($stmt as $row) {
+				$sql = $row['sql'];
+				$matches = array();
 
-			if (preg_match('/`*(\w+?)`*\s+\w+?\s+PRIMARY KEY/', $sql, $matches)) {
-				$results[] = $matches[1];
-			}elseif (preg_match('/PRIMARY KEY\s?\(([\w`",\s?]+?)\s?\)/', $sql, $matches)) {
-				$results = array_map(function($el) { return trim($el, '" `'); }, explode(',', $matches[1]));
+				if (preg_match('/`*(\w+?)`*\s+\w+?\s+PRIMARY KEY/', $sql, $matches)) {
+					$results[] = $matches[1];
+				}elseif (preg_match('/PRIMARY KEY\s?\(([\w`",\s?]+?)\s?\)/', $sql, $matches)) {
+					$results = array_map(function($el) { return trim($el, '" `'); }, explode(',', $matches[1]));
+				}
 			}
+			if (is_array($results) && count($results) == 1) {
+				$results = array_pop($results);
+			}
+			$this->key_dict[$table] = $results;
 		}
-		return count($results) == 0 ? false : count($results) == 1 ? array_pop($results) : $results;
+		return $this->key_dict[$table];
 	}
 
 	public function columns($table) {
-			$stmt = $this->_pdo->query("PRAGMA table_info($table)");
+		if (!isset($this->column_dict[$table])) {
+			$stmt = $this->pdo->query("PRAGMA table_info($table)");
 			$columns = array();
 			while($row = $stmt->fetch()) {
 					$columns[] = $row['name'];
 			}
-			return $columns;
+			$this->column_dict[$table] = $columns;
+		}
+		return $this->column_dict[$table];
 	}
 
 	/**
