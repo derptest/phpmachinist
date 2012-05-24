@@ -9,9 +9,10 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 		if (file_exists('test.db')) {
 			unlink('test.db');
 		}
-	    $this->pdo = new PDO("sqlite::memory:");
+	    $this->pdo = Phake::partialMock('PDO', "sqlite::memory:");
 //		$this->pdo = new PDO("sqlite:test.db");
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$this->pdo->exec('DROP TABLE IF EXISTS `stuff`;');
 		$this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100) );');
 		$this->pdo->exec('DROP TABLE IF EXISTS `some_stuff`;');
 		$this->pdo->exec('CREATE TABLE `some_stuff` (
@@ -19,12 +20,20 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
   			`stuff_id` int(10)  NOT NULL,
   			`name` VARCHAR(100),
 			PRIMARY KEY (`some_id`,`stuff_id`));');
+		$this->pdo->exec('DROP TABLE IF EXISTS `some_other_stuff`;');
+		$this->pdo->exec('CREATE TABLE `some_other_stuff` (
+  			`some_id` int(10)  NOT NULL,
+  			`stuff_id` int(10)  NOT NULL,
+  			`name` VARCHAR(100),
+			PRIMARY KEY( "some_id" , "stuff_id" ));');
+		$this->pdo->exec('DROP TABLE IF EXISTS `group`;');
 		$this->pdo->exec('create table `group` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` VARCHAR(255));');
+		$this->pdo->exec('DROP TABLE IF EXISTS `no_pk`;');
+		$this->pdo->exec('create table `no_pk` ( `id` INTEGER, `name` VARCHAR(255));');
 		$this->driver = SqlStore::fromPdo($this->pdo);
 	}
 
 	public function tearDown() {
-		$this->pdo->exec('DROP TABLE `stuff`;');
 		unset($this->pdo);
 	}
 
@@ -86,6 +95,16 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
 	}
 
+	public function testFindCompoundPrimareyKeyAlternateQuotingAndSpacing() {
+		$ids = $this->driver->primaryKey('some_other_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+	}
+
+	public function testFindCompoundPrimareyKeyNoneDefined() {
+		$ids = $this->driver->primaryKey('no_pk');
+		$this->assertFalse($ids);
+	}
+
 	public function testInsertingIntoGroup() {
 		$what = $this->driver->insert('group', array('name' => "Hello"));
 		$found = $this->driver->find('group', array('id' => $what));
@@ -95,5 +114,21 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 	public function testTruncatingGroup() {
 		$this->driver->wipe('group', true);
 		$this->assertTrue(true); // if we didn't die, all is well
+	}
+
+	public function testPrimaryKeyCachesResult() {
+		$ids = $this->driver->primaryKey('some_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+		Phake::verifyNoFurtherInteraction($this->pdo);
+		$ids = $this->driver->primaryKey('some_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+	}
+
+	public function testColumns() {
+		$cols = $this->driver->columns('stuff');
+		$this->assertEquals(array('id', 'name'), $cols);
+		Phake::verifyNoFurtherInteraction($this->pdo);
+		$cols = $this->driver->columns('stuff');
+		$this->assertEquals(array('id', 'name'), $cols);
 	}
 }

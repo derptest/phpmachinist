@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<phpunit 
+	bootstrap="test/bootstrap.php" 
+	syntaxCheck="true"
+	colors="true"
+	convertErrorsToExceptions="true" 
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	strict="true"
+	verbose="true"
+>
+	<testsuites>
+		<testsuite name="All Machinist Tests">
+			<directory>test/machinist</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<whitelist>
+			<exclude>
+			</exclude>
+			<directory>src</directory>
+		</whitelist>
+	</filter>
+</phpunit>

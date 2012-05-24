@@ -6,7 +6,7 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 	private $driver;
 	private $pdo;
 	public function setUp() {
-		$this->pdo = new PDO('mysql:host=localhost', 'root');
+		$this->pdo = Phake::partialMock('PDO', 'mysql:host=localhost', 'root');
 		$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->pdo->exec('CREATE DATABASE IF NOT EXISTS `machinist_test`;');
 		$this->pdo->exec('USE `machinist_test`;');
@@ -15,7 +15,7 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 		$this->pdo->exec('DROP TABLE IF EXISTS `some_stuff`;');
 		$this->pdo->exec('CREATE TABLE `some_stuff` (
 `some_id` int(10) unsigned NOT NULL,
-`stuff_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`stuff_id` int(10) unsigned NOT NULL,
 `name` VARCHAR(100),
 PRIMARY KEY (`some_id`,`stuff_id`));');
 		$this->pdo->exec('DROP TABLE IF EXISTS `group`;');
@@ -28,9 +28,7 @@ PRIMARY KEY (`some_id`,`stuff_id`));');
 	}
 
 	public function tearDown() {
-		$this->pdo->exec('DROP TABLE `stuff`;');
-		$this->pdo->exec('DROP TABLE `some_stuff`;');
-		$this->pdo->exec('DROP TABLE `group`;');
+		unset($this->pdo);
 	}
 
 	public function testSqlStoreGetsInstance() {
@@ -103,5 +101,21 @@ PRIMARY KEY (`some_id`,`stuff_id`));');
 	public function testTruncatingGroup() {
 		$this->driver->wipe('group', true);
 		$this->assertTrue(true); // if we didn't die, all is well
+	}
+
+	public function testPrimaryKeyCachesResult() {
+		$ids = $this->driver->primaryKey('some_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+		Phake::verifyNoFurtherInteraction($this->pdo);
+		$ids = $this->driver->primaryKey('some_stuff');
+		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
+	}
+
+	public function testColumns() {
+		$cols = $this->driver->columns('stuff');
+		$this->assertEquals(array('id', 'name'), $cols);
+		Phake::verifyNoFurtherInteraction($this->pdo);
+		$cols = $this->driver->columns('stuff');
+		$this->assertEquals(array('id', 'name'), $cols);
 	}
 }

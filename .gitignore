@@ -1,3 +1,5 @@
 *.iml
 *.db
 vendor
+composer.lock
+phpunit.xml
