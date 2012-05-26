@@ -6,7 +6,10 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 	private $driver;
 	private $pdo;
 	public function setUp() {
-		$this->pdo = Phake::partialMock('PDO', 'mysql:host=localhost', 'root');
+		$this->pdo = Phake::partialMock('PDO',
+						$_ENV['MySQL_Driver_DSN'],
+						$_ENV['MySQL_Driver_User'],
+						$_ENV['MySQL_Driver_Password']);
 		$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->pdo->exec('CREATE DATABASE IF NOT EXISTS `machinist_test`;');
 		$this->pdo->exec('USE `machinist_test`;');
@@ -14,10 +17,10 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 		$this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTO_INCREMENT, `name` varchar(100) );');
 		$this->pdo->exec('DROP TABLE IF EXISTS `some_stuff`;');
 		$this->pdo->exec('CREATE TABLE `some_stuff` (
-`some_id` int(10) unsigned NOT NULL,
-`stuff_id` int(10) unsigned NOT NULL,
-`name` VARCHAR(100),
-PRIMARY KEY (`some_id`,`stuff_id`));');
+												`some_id` int(10) unsigned NOT NULL,
+												`stuff_id` int(10) unsigned NOT NULL,
+												`name` VARCHAR(100),
+												PRIMARY KEY (`some_id`,`stuff_id`));');
 		$this->pdo->exec('DROP TABLE IF EXISTS `group`;');
 		$this->pdo->exec('create table `group` ( `id` INTEGER PRIMARY KEY AUTO_INCREMENT, `name` VARCHAR(255));');
 

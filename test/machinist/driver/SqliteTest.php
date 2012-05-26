@@ -1,17 +1,18 @@
 <?php
+
 use \machinist\driver\SqlStore;
 use \machinist\driver\Sqlite;
-class SqliteTest extends PHPUnit_Framework_TestCase {
+
+class SqliteTest extends PHPUnit_Framework_TestCase
+{
+
 	private $driver;
+
 	private $pdo;
 
 	public function setUp() {
-		if (file_exists('test.db')) {
-			unlink('test.db');
-		}
-	    $this->pdo = Phake::partialMock('PDO', "sqlite::memory:");
-//		$this->pdo = new PDO("sqlite:test.db");
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$this->pdo = Phake::partialMock('PDO', $_ENV['SQLite_Driver_DSN']);
+		$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->pdo->exec('DROP TABLE IF EXISTS `stuff`;');
 		$this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100) );');
 		$this->pdo->exec('DROP TABLE IF EXISTS `some_stuff`;');
@@ -38,7 +39,8 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSqlStoreGetsInstance() {
-		$this->assertInstanceOf('\machinist\driver\Sqlite', SqlStore::fromPdo($this->pdo));
+		$this->assertInstanceOf('\machinist\driver\Sqlite',
+						SqlStore::fromPdo($this->pdo));
 	}
 
 	public function testGetPrimaryKey() {
@@ -89,7 +91,6 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($row[0]->id, $id);
 	}
 
-
 	public function testFindCompoundPrimareyKey() {
 		$ids = $this->driver->primaryKey('some_stuff');
 		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
@@ -131,4 +132,5 @@ class SqliteTest extends PHPUnit_Framework_TestCase {
 		$cols = $this->driver->columns('stuff');
 		$this->assertEquals(array('id', 'name'), $cols);
 	}
+
 }

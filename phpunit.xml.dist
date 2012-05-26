@@ -21,4 +21,10 @@
 			<directory>src</directory>
 		</whitelist>
 	</filter>
+	<php>
+		<env name="SQLite_Driver_DSN" value="sqlite::memory:"/>
+		<env name="MySQL_Driver_DSN" value="mysql:host=localhost"/>
+		<env name="MySQL_Driver_User" value="root"/>
+		<env name="MySQL_Driver_Password" value=""/>
+	</php>
 </phpunit>
