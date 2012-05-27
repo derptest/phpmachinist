@@ -17,6 +17,7 @@
 	"require-dev": {
 		"ext-pdo_mysql": "*",
 		"ext-pdo_sqlite": "*",
-		"phake/phake": "dev-master"
+		"phake/phake": "dev-master",
+		"doctrine/orm": ">=2.0.0"
 	}
 }

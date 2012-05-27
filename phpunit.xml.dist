@@ -26,5 +26,7 @@
 		<env name="MySQL_Driver_DSN" value="mysql:host=localhost"/>
 		<env name="MySQL_Driver_User" value="root"/>
 		<env name="MySQL_Driver_Password" value=""/>
-	</php>
+		<env name="Doctrine_Driver_SQLite_DSN" value="sqlite::memory:" />
+		<env name="Doctrine_Driver_Proxy_Root_Directory" value="/tmp/machinist/proxy" />
+ 	</php>
 </phpunit>
