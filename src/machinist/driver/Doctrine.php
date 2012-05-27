@@ -16,10 +16,23 @@ use Doctrine\ORM\Query;
 class Doctrine implements Store
 {
 	/**
-	 * @var type 
+	 * @var array
 	 */
 	private $_namespaces;
+
+	/**
+	 * @var EntityManager
+	 */
 	private $_em;
+
+	/**
+	 * Cache of converted entities used to prevent a continuous
+	 * loop when converting entities to stdClass objects. The cache
+	 * is reset ever tiyme a find is perfored to ensure data accuracy.
+	 * 
+	 * @var array
+	 */
+	private $_conversion_cache;
 
 	/**
 	 * @param \Doctrine\ORM\EntityManager $em Doctrine 2 Entity Manager
@@ -29,6 +42,7 @@ class Doctrine implements Store
 	public function __construct(EntityManager $em, array $namespaces = array()) {
 		$this->_em = $em;
 		$this->_namespaces = $namespaces;
+		$this->_conversion_cache = array();
 	}
 	
 	public function columns($table) {
@@ -38,6 +52,7 @@ class Doctrine implements Store
 	}
 
 	public function find($table, $data) {
+		$this->resetConversionCache();
 		$class_name = $this->resolveEntityName($table);
 		$repo = $this->_em->getRepository($class_name);
 		$qb = $repo->createQueryBuilder('e')->addSelect('e');
@@ -137,11 +152,42 @@ class Doctrine implements Store
 	}
 
 	protected function convertSimpleEntityToStdClass($entity) {
-		$object = new \stdClass();
-		$meta = $this->_em->getClassMetadata(\get_class($entity));
-		foreach ($meta->getFieldNames() as $field) {
-			$object->{$field} = $meta->getFieldValue($entity, $field);
+		if (is_null($entity)) {
+			return null;
 		}
-		return $object;
+
+		$id =  spl_object_hash($entity);
+		if (!isset($this->_conversion_cache[$id])) {
+			$object = new \stdClass();
+			// Set immediately for references to top level object
+			$this->_conversion_cache[$id] = $object;
+			$meta = $this->_em->getClassMetadata(\get_class($entity));
+			foreach ($meta->getFieldNames() as $field) {
+				$object->{$field} = $meta->getFieldValue($entity, $field);
+			}
+			foreach ($meta->getAssociationMappings() as $field => $mapping) {
+				$value = $meta->getFieldValue($entity, $field);
+				if ($value instanceof \Doctrine\Common\Collections\Collection) {
+					$object->{$field} = array();
+					foreach ($value as $item) {
+						$object->{$field}[] = $this->convertSimpleEntityToStdClass($item);
+					}
+				} else {
+					$object->{$field} = $this->convertSimpleEntityToStdClass($value);
+					if (isset($mapping['joinColumns'])) {
+						$field_column = $mapping['joinColumns'][0]['name'];
+						$ref_column = $mapping['joinColumns'][0]['referencedColumnName'];
+						$ref_meta = $this->_em->getClassMetadata(\get_class($value));
+						$ref_field = $ref_meta->getFieldForColumn($ref_column);
+						$object->{$field_column} = $ref_meta->getFieldValue($value, $ref_field);
+					}
+				}
+			}
+		}
+		return $this->_conversion_cache[$id];
+	}
+
+	protected function resetConversionCache() {
+		$this->_conversion_cache = array();
 	}
 }

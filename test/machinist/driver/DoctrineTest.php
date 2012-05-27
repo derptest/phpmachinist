@@ -1,11 +1,13 @@
 <?php
 namespace machinist\driver;
 
-require_once 'testentity/doctrine/Stuff.php';
-
-use testentity\doctrine\Group;
-use testentity\doctrine\Stuff;
-use testentity\doctrine\SomeStuff;
+use machinist\driver\testentity\doctrine\Group;
+use machinist\driver\testentity\doctrine\Stuff;
+use machinist\driver\testentity\doctrine\SomeStuff;
+use machinist\driver\testentity\doctrine\Master;
+use machinist\driver\testentity\doctrine\Detail;
+use machinist\driver\testentity\doctrine\ManyLeft;
+use machinist\driver\testentity\doctrine\ManyRight;
 
 /**
  * Description of DoctrineTest
@@ -137,5 +139,64 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
 		$what = $this->driver->insert('Group', array('name' => "Hello"));
 		$found = $this->driver->find('group', array('id' => $what));
 		$this->assertEquals("Hello", $found[0]->name);
+	}
+
+	public function testManyToOne() {
+		$detail = new Detail();
+		$detail->setName('Detail Name');
+		$master = new Master();
+		$master->setDetail($detail);
+		$this->em->persist($master);
+		$this->em->persist($detail);
+		$this->em->flush();
+		$machine = $this->driver->find('master', $master->getId());
+		$this->assertEquals('Detail Name', $machine->detail->name);
+		$this->assertEquals($detail->getId(), $machine->detail_id);
+	}
+
+	public function testManyToMany() {
+		$left1 = new ManyLeft();
+		$left2 = new ManyLeft();
+		$right1 = new ManyRight();
+		$right2 = new ManyRight();
+		$left1->setManyRights(array($right1, $right2));
+		$left2->setManyRights(array($right1));
+		$right1->setManyLefts(array($left1, $left2));
+		$right2->setManyLefts(array($left1));
+		$this->em->persist($left1);
+		$this->em->persist($left2);
+		$this->em->persist($right1);
+		$this->em->persist($right2);
+		$this->em->flush();
+		$machine = $this->driver->find('ManyLeft', $left1->getId());
+		$this->assertEquals(2, count($machine->rights),
+						'Unexpected number of rights in left1');
+		foreach ($machine->rights as $right) {
+			$this->assertContains($right->id,
+							array($right1->getId(), $right2->getId()),
+							'Unexpected value for ID in right for left1');
+		}
+		$machine = $this->driver->find('ManyLeft', $left2->getId());
+		$this->assertEquals(1, count($machine->rights),
+						'Unexpected number of rights in left2');
+		foreach ($machine->rights as $right) {
+			$this->assertEquals($right->id, $right1->getId(),
+							'Unexpected value for ID in right for left2');
+		}
+		$machine = $this->driver->find('ManyRight', $right1->getId());
+		$this->assertEquals(2, count($machine->lefts),
+						'Unexpected number of lefts right1');
+		foreach ($machine->lefts as $left) {
+			$this->assertContains($left->id,
+							array($left1->getId(), $left2->getId()),
+							'Unexpected value for ID in left for right1');
+		}
+		$machine = $this->driver->find('ManyRight', $right2->getId());
+		$this->assertEquals(1, count($machine->lefts),
+						'Unexpected number of lefts in right2');
+		foreach ($machine->lefts as $left) {
+			$this->assertEquals($left->id, $left1->getId(),
+							'Unexpected value for ID in left for right2');
+		}
 	}
 }
