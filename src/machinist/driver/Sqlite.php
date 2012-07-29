@@ -36,8 +36,10 @@ class Sqlite extends SqlStore {
 
 				if (preg_match('/`*(\w+?)`*\s+\w+?\s+PRIMARY KEY/', $sql, $matches)) {
 					$results[] = $matches[1];
-				}elseif (preg_match('/PRIMARY KEY\s?\(([\w`",\s?]+?)\s?\)/', $sql, $matches)) {
+				} elseif (preg_match('/PRIMARY KEY\s?\(([\w`",\s?]+?)\s?\)/', $sql, $matches)) {
 					$results = array_map(function($el) { return trim($el, '" `'); }, explode(',', $matches[1]));
+				} else {
+					$results = $this->columns($table);
 				}
 			}
 			if (is_array($results) && count($results) == 1) {
@@ -48,7 +50,7 @@ class Sqlite extends SqlStore {
 		return $this->key_dict[$table];
 	}
 
-	public function columns($table) {
+	protected function columns($table) {
 		if (!isset($this->column_dict[$table])) {
 			$stmt = $this->pdo->query("PRAGMA table_info($table)");
 			$columns = array();

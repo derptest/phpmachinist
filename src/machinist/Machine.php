@@ -24,13 +24,6 @@ class Machine implements \ArrayAccess,\IteratorAggregate {
 	 */
 	public function getIdColumn() {
 		$key = $this->store->primaryKey($this->getTable());
-
-		// If there is no primary key, use all columns to try and determine
-		// uniqueness
-		if ($key === false) {
-			$key = $this->store->columns($this->getTable());
-		}
-
 		return $key;
 	}
 	/**

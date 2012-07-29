@@ -101,9 +101,9 @@ class SqliteTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
 	}
 
-	public function testFindCompoundPrimareyKeyNoneDefined() {
+	public function testFindCompoundPrimareyKeyNoneDefinedReturnsAllColumns() {
 		$ids = $this->driver->primaryKey('no_pk');
-		$this->assertFalse($ids);
+		$this->assertEquals(array('id', 'name'), $ids);
 	}
 
 	public function testInsertingIntoGroup() {
@@ -124,13 +124,4 @@ class SqliteTest extends PHPUnit_Framework_TestCase
 		$ids = $this->driver->primaryKey('some_stuff');
 		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
 	}
-
-	public function testColumns() {
-		$cols = $this->driver->columns('stuff');
-		$this->assertEquals(array('id', 'name'), $cols);
-		Phake::verifyNoFurtherInteraction($this->pdo);
-		$cols = $this->driver->columns('stuff');
-		$this->assertEquals(array('id', 'name'), $cols);
-	}
-
 }

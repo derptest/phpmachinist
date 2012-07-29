@@ -82,11 +82,6 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('id', $this->driver->primaryKey('Stuff'));
 	}
 
-	public function testColumns() {
-		$cols = $this->driver->columns('Stuff');
-		$this->assertEquals(array('id', 'name'), $cols);
-	}
-
 	public function testInsertReturnsKey() {
 		$id = $this->driver->insert('Stuff', array('name' => 'stupid'));
 		$this->assertEquals(1, $id);

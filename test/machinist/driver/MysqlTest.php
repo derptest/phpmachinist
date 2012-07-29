@@ -42,8 +42,8 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('id', $this->driver->primaryKey('stuff'));
 	}
 
-	public function testGetPrimaryKeyNoKey() {
-		$this->assertEquals(false, $this->driver->primaryKey('nopk'));
+	public function testGetPrimaryKeyNoKeyReturnsAllColumns() {
+		$this->assertEquals(array('id', 'name'), $this->driver->primaryKey('nopk'));
 	}
 
 	public function testInsertReturnsKey() {
@@ -112,13 +112,5 @@ class MysqlTest extends PHPUnit_Framework_TestCase {
 		Phake::verifyNoFurtherInteraction($this->pdo);
 		$ids = $this->driver->primaryKey('some_stuff');
 		$this->assertEquals(array('some_id', 'stuff_id'), $ids);
-	}
-
-	public function testColumns() {
-		$cols = $this->driver->columns('stuff');
-		$this->assertEquals(array('id', 'name'), $cols);
-		Phake::verifyNoFurtherInteraction($this->pdo);
-		$cols = $this->driver->columns('stuff');
-		$this->assertEquals(array('id', 'name'), $cols);
 	}
 }

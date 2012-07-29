@@ -11,12 +11,12 @@
 		}
 	},
 	"require": {
-		"php": ">5.3.0",
-		"ext-PDO": "*"
+		"php": ">5.3.0"
 	},
 	"require-dev": {
 		"ext-pdo_mysql": "*",
 		"ext-pdo_sqlite": "*",
+		"ext-mongo": "*",
 		"phake/phake": "dev-master",
 		"doctrine/orm": ">=2.0.0"
 	}

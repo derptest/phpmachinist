@@ -27,12 +27,14 @@ class Mysql extends SqlStore {
 	public function primaryKey($table) {
 		if (!isset($this->key_dict[$table])) {
 			$stmt = $this->pdo()->query("SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY'");
-			$results = false;
+			$results = array();
 			while ($row = $stmt->fetch(\PDO::FETCH_OBJ)) {
 				$results[] = $row->Column_name;
 			}
 
-			if (is_array($results) && count($results) == 1) {
+			if (count($results) < 1) {
+				$results = $this->columns($table);
+			} else if (is_array($results) && count($results) == 1) {
 				$results = array_pop($results);
 			}
 			$this->key_dict[$table] = $results;
@@ -40,7 +42,7 @@ class Mysql extends SqlStore {
 		return $this->key_dict[$table];
 	}
 
-	public function columns($table) {
+	protected function columns($table) {
 		if (!isset($this->column_dict[$table])) {
 			$stmt = $this->pdo()->query("DESCRIBE `$table`");
 			$columns = array();

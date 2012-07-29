@@ -45,7 +45,7 @@ class Doctrine implements Store
 		$this->_conversion_cache = array();
 	}
 	
-	public function columns($table) {
+	protected function columns($table) {
 		$class_name = $this->resolveEntityName($table);
 		$fields = $this->_em->getClassMetadata($class_name)->getFieldNames();
 		return $fields;
