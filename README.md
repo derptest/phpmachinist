@@ -12,10 +12,6 @@ several projects:
 They're totally awesome. Just either in the wrong language, or didn't quite do what I wanted.
 
 ## Install
-http://pearhub.org/projects/machinist
-
-OR
-
 Add the package phpmachinist/phpmachinist to your composer.json
 For more information about Composer, please visit http://getcomposer.org
 
