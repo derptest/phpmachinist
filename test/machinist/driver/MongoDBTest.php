@@ -65,6 +65,20 @@ class MongoDBTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('stupid', $stuff['name']);
 	}
 
+	public function testInsertStoresCorrectValueMongoID() {
+		$id = new \MongoId();
+		$this->driver->insert('Stuff', array('_id' => $id, 'name' => 'stupid'));
+		$stuff = $this->mongo_db->Stuff->findOne(array('_id' => $id));
+		$this->assertEquals('stupid', $stuff['name']);
+	}
+
+	public function testInsertStoresCorrectValueMongoDate() {
+		$date = new \MongoTimestamp();
+		$id = $this->driver->insert('Stuff', array('date' => $date));
+		$stuff = $this->mongo_db->Stuff->findOne(array('_id' => $id));
+		$this->assertEquals($date, $stuff['date']);
+	}
+
 	public function testFindPullsRow() {
 		$stuff = array('name' => 'stupid');
 		$this->mongo_db->Stuff->insert($stuff);
