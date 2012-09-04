@@ -17,21 +17,50 @@ class MongoDB implements Store
 	public function __construct(\MongoDB $mongo_db) {
 		$this->mongo_db = $mongo_db;
 	}
-	//put your code here
+
 	public function find($table, $data) {
-		if (!is_array($data)) {
-			$data = array("_id" => $data);
+		try {
+			$collection = $this->mongo_db->selectCollection($table);
+		} catch (\Exception $e) {
+				throw new \machinist\Error(
+								sprintf('An error occurred selecting the %s collection', $table),
+								$e->getCode(), $e);
 		}
-		$found = array();
-		$cursor = $this->mongo_db->selectCollection($table)->find($data);
-		foreach ($cursor as $item) {
-			$found[] = $this->translateDBReferences($item);
+		if (is_array($data)) {
+			$found = array();
+			try {
+				$cursor = $collection->find($data);
+			} catch (\Exception $e) {
+				throw new \machinist\Error(
+								sprintf('An error occurred finding documents in collection %s with search criteria of %s',
+												$table, var_export($data, true)),
+								$e->getCode(), $e);
+			}
+			foreach ($cursor as $item) {
+				$found[] = (object) $this->translateDBReferences($item);
+			}
+		} else {
+			try {
+				$found = (object) $collection->findOne(array("_id" => $data));
+			} catch (\Exception $e) {
+				throw new \machinist\Error(
+								sprintf('An error occurred finding a single document in collection %s with an _id property of %s',
+												$table, (string) $data),
+								$e->getCode(), $e);
+			}
 		}
 		return $found;
 	}
 
 	public function insert($table, $data) {
-		$this->mongo_db->selectCollection($table)->insert($data);
+		try {
+			$this->mongo_db->selectCollection($table)->insert($data);
+		} catch (\Exception $e) {
+			throw new \machinist\Error(
+							sprintf('Unable to insert data "%s" into table %s',
+											var_export($data, true),
+											$table), $e->getCode(), $e);
+		}
 		return $data['_id'];
 	}
 
@@ -40,10 +69,18 @@ class MongoDB implements Store
 	}
 
 	public function wipe($table, $truncate) {
-		if ($truncate) {
-			$this->mongo_db->selectCollection($table)->drop();
-		} else {
-			$this->mongo_db->selectCollection($table)->remove();
+		try {
+			if ($truncate) {
+				$this->mongo_db->selectCollection($table)->drop();
+			} else {
+				$this->mongo_db->selectCollection($table)->remove();
+			}
+		} catch (\Exception $e) {
+			throw new \machinist\Error(
+							sprintf('An error occurred wiping the table %s with the truncate flag set to %s',
+											$table, $truncate ? 'true' : 'false'),
+							$e->getCode(),
+							$e);
 		}
 	}
 

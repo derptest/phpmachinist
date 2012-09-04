@@ -3,6 +3,9 @@ namespace machinist\driver;
 
 use Mongo, MongoDB, MongoDBRef;
 use machinist\driver\MongoDB as MongoDBDriver;
+use machinist\Machinist as m;
+use machinist\relationship\Relationship as r;
+use machinist\Blueprint as b;
 
 /**
  * Unit test for the MongoDB driver
@@ -26,6 +29,11 @@ class MongoDBTest extends \PHPUnit_Framework_TestCase
 	 */
 	private $driver;
 
+	/**
+	 * @var \machinist\Machinist 
+	 */
+	private $machinist;
+
 	protected function setUp() {
 		parent::setUp();
 		$this->mongo = new Mongo($_ENV['DoctrineMongoDB_DSN']);
@@ -34,6 +42,8 @@ class MongoDBTest extends \PHPUnit_Framework_TestCase
 		foreach ($this->mongo_db->listCollections() as $collection) {
 			$this->mongo_db->dropCollection($collection);
 		}
+		$this->machinist = new \machinist\Machinist();
+		$this->machinist->addStore($this->driver, 'default');
 	}
 
 	protected function tearDown() {
@@ -83,11 +93,8 @@ class MongoDBTest extends \PHPUnit_Framework_TestCase
 		$stuff = array('name' => 'stupid');
 		$this->mongo_db->Stuff->insert($stuff);
 		$id = $stuff['_id'];
-		$rows = $this->driver->find('Stuff', $id);
-		$this->assertEquals(1, count($rows),
-						'Unexpected number of records returned');
-		$row = array_pop($rows);
-		$this->assertEquals("stupid", $row['name']);
+		$row = $this->driver->find('Stuff', $id);
+		$this->assertEquals("stupid", $row->name);
 	}
 
 	public function testEmptyNoTruncateDeletesRows() {
@@ -119,7 +126,7 @@ class MongoDBTest extends \PHPUnit_Framework_TestCase
 		$rows = $this->driver->find('Stuff', array('name' => 'stupid'));
 		$this->assertNotEmpty($rows);
 		$row = array_pop($rows);
-		$this->assertEquals($row['_id'], $id);
+		$this->assertEquals($row->_id, $id);
 	}
 
 	public function testMultiLevelDocument() {
@@ -132,24 +139,94 @@ class MongoDBTest extends \PHPUnit_Framework_TestCase
 				));
 		$this->mongo_db->Stuff->insert($stuff);
 		$id = $stuff['_id'];
-		$rows = $this->driver->find('Stuff', $id);
-		$this->assertNotEmpty($rows);
-		$row = array_pop($rows);
-		$this->assertEquals($row['_id'], $id);
-		$this->assertEquals('stupid', $row['name']);
-		$this->assertInternalType('array', $row['thestuff']);
-		$this->assertEquals(array('blue','green','yellow'), $row['thestuff']);
+		$row = $this->driver->find('Stuff', $id);
+		$this->assertEquals($row->_id, $id);
+		$this->assertEquals('stupid', $row->name);
+		$this->assertInternalType('array', $row->thestuff);
+		$this->assertEquals(array('blue','green','yellow'), $row->thestuff);
 	}
 
-	public function testDBRefenceReturnsId() {
+	public function testDBRefenceReturnsMongoDBRef() {
 		$other_stuff = array('foo' => 'bar');
 		$this->mongo_db->OtherStuff->insert($other_stuff);
 		$stuff = array(
 				'name' => 'stupid',
 				'other_stuff' => MongoDBRef::create('OtherStuff', $other_stuff['_id']));
 		$this->mongo_db->Stuff->insert($stuff);
-		$found = $this->driver->find('Stuff', $stuff['_id']);
-		$found_stuff = array_pop($found);
-		$this->assertEquals($other_stuff['_id'], $found_stuff['other_stuff']);
+		$found_stuff = $this->driver->find('Stuff', $stuff['_id']);
+		$this->assertTrue(\MongoDBRef::isRef($found_stuff->other_stuff));
+		$this->assertEquals($other_stuff['_id'], $found_stuff->other_stuff['$id']);
+	}
+	
+	public function testBluePrintMongoDate() {
+		$date = new \MongoDate(strtotime('yesterday'));
+		$other_date = new \MongoDate();
+		$bp = new \machinist\Blueprint(
+						$this->machinist,
+						'Stuff',
+						array('date' => $date));
+		$bp = $bp->make(array('otherDate' => $other_date));
+		$actual = $this->mongo_db->Stuff->findOne(array('_id' => $bp->_id));
+		$this->assertEquals($date, $actual['date']);
+		$this->assertEquals($other_date, $actual['otherDate']);
+	}
+	
+	public function testBluePrintMongoTimestamp() {
+		$date = new \MongoTimestamp(strtotime('yesterday'));
+		$other_date = new \MongoTimestamp();
+		$bp = new \machinist\Blueprint(
+						$this->machinist,
+						'Stuff',
+						array('date' => $date));
+		$bp = $bp->make(array('otherDate' => $other_date));
+		$actual = $this->mongo_db->Stuff->findOne(array('_id' => $bp->_id));
+		$this->assertEquals($date, $actual['date']);
+		$this->assertEquals($other_date, $actual['otherDate']);
+	}
+
+	public function testRelationshipPersistsCorrectly() {
+		$other_stuff_bp = new \machinist\Blueprint(
+						$this->machinist,
+						'OtherStuff',
+						array('name' => 'other_stuff'));
+		$relationship = new r($other_stuff_bp);
+		$relationship->local('other_stuff_id');
+		$stuff_bp = new b(
+						$this->machinist,
+						'Stuff',
+						array(
+								'name' => 'stuff',
+								'other_stuff' => $relationship
+						));
+		$stuff_machine = $stuff_bp->make();
+		$stuff_id = $stuff_machine->_id;
+		$actual_stuff = $this->mongo_db->Stuff->findOne(array('_id' => $stuff_id));
+		$this->assertEquals('stuff', $actual_stuff['name']);
+		$this->assertInstanceOf('\MongoId', $actual_stuff['other_stuff_id']);
+		$actual_other_stuff = $this->mongo_db->OtherStuff->findOne(array('_id' => $actual_stuff['other_stuff_id']));
+		$this->assertEquals('other_stuff', $actual_other_stuff['name']);
+	}
+
+	public function testRelationshipFindsCorrectly() {
+		$other_stuff = array('name' => 'other stuff');
+		$this->mongo_db->OtherStuff->insert($other_stuff);
+		$stuff = array('name' => 'stuff', 'other_stuff_id' => $other_stuff['_id']);
+		$this->mongo_db->Stuff->insert($stuff);
+		
+		$other_stuff_bp = new b($this->machinist, 'OtherStuff');
+		$relationship = new r($other_stuff_bp);
+		$relationship->local('other_stuff_id');
+
+		$stuff_bp = new b(
+						$this->machinist,
+						'Stuff',
+						array(
+								'name' => 'stuff',
+								'other_stuff' => $relationship
+						));
+	
+		$machine = $stuff_bp->findOne($stuff['_id']);
+		$this->assertEquals('stuff', $machine->name);
+		$this->assertEquals('other stuff', $machine->other_stuff->name);
 	}
 }
