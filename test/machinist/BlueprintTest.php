@@ -75,6 +75,27 @@ class BlueprintTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('test2', $result->col2);
 	}
 
+	public function testMakeWithMultiLevelDefaultsMergesOverridesData() {
+		$bp = new Blueprint(
+			$this->machinist,
+			'test_table',
+			array('doc' => array('a' => 'aye', 'c' => 'see'))
+		);
+		Phake::when($this->store)
+			->find(Phake::anyParameters())
+			->thenReturn(array(new stdClass()));
+		Phake::when($this->store)
+			->columns(Phake::anyParameters())
+			->thenReturn(array('doc'));
+		
+		$bp->make(array('doc' => array('a' => 'new aye', 'b' => 'bee')));
+		
+		$expected = array('doc' => array('a' => 'new aye', 'b' => 'bee', 'c' => 'see'));
+		$actual = null;
+		Phake::verify($this->store)->insert('test_table', Phake::capture($actual));
+		$this->assertEquals($expected, $actual);
+	}
+
 	public function testCallableTableName() {
 		$bp = new Blueprint(
 			$this->machinist,

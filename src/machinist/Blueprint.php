@@ -41,7 +41,7 @@ class Blueprint {
 		$data = $this->buildData($overrides);
 		$store = $this->machinist->getStore($this->store);
 		$insert_data = array_filter($data, function($i) {
-			return !(is_object($i) || is_array($i));
+			return !($i instanceof Machine);
 		});
 		$table = $this->getTable($data);
 		$id = $store->insert($table, $insert_data);
@@ -186,6 +186,7 @@ class Blueprint {
 							$fk = $new_row->getIdColumn();
 						}
 						$data[$k] = $new_row;
+						
 						$data[$v->getLocal()] = $new_row->{$fk};
 						unset($overrides[$k]);
 					} elseif(is_string($overrides[$k])) {
@@ -201,7 +202,7 @@ class Blueprint {
 						$data[$v->getLocal()] = $overrides[$k]->{$fk};
 						unset($overrides[$k]);
 					}
-				}elseif (is_callable($v)) {
+				} elseif (is_callable($v)) {
 					$data[$k] = call_user_func_array($v, array($data));
 				} else {
 					$data[$k] = $v;
@@ -212,6 +213,8 @@ class Blueprint {
 
 			if (is_callable($v)) {
 				$data[$k] = call_user_func_array($v, array($data));
+			} elseif (is_array($v) && array_key_exists($k, $data) && is_array($data[$k])) {
+					$data[$k] = array_replace_recursive($data[$k], $v);
 			} elseif(!$v instanceof Machine) {
 				$data[$k] = $v;
 			}
