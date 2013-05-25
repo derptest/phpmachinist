@@ -11,7 +11,7 @@
 >
 	<testsuites>
 		<testsuite name="All Machinist Tests">
-			<directory>test/machinist</directory>
+			<directory>test/DerpTest</directory>
 		</testsuite>
 	</testsuites>
 	<filter>
@@ -28,5 +28,7 @@
 		<env name="MySQL_Driver_Password" value=""/>
 		<env name="Doctrine_Driver_SQLite_DSN" value="sqlite::memory:" />
 		<env name="Doctrine_Driver_Proxy_Root_Directory" value="/tmp/machinist/proxy" />
+		<env name="DoctrineMongoDB_DSN" value="mongodb://localhost" />
+		<env name="DoctrineMongoDB_DB" value="phpmachinist" />
  	</php>
 </phpunit>
