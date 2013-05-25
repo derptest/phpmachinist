@@ -1,10 +1,10 @@
 <?php
-$steps->Given('/^the following (\w+) exists:$/', function($world, $blueprint, $table) {
-	\machinist\behat\functions\createMachinesFromTable($world, $blueprint, $table);
+$steps->Given('/^the following (\w+) exists:$/', function ($world, $blueprint, $table) {
+    \Machinist\Behat\functions\createMachinesFromTable($world, $blueprint, $table);
 });
-$steps->Given('/^there are no (\w+) machines$/', function($world, $bp) {
-	\machinist\Machinist::wipe($bp, true);
+$steps->Given('/^there are no (\w+) machines$/', function ($world, $bp) {
+    \Machinist\Machinist::wipe($bp, true);
 });
-$steps->Given('/^there are no machines$/', function($world) {
-	\machinist\Machinist::instance()->wipeAll(true);
+$steps->Given('/^there are no machines$/', function ($world) {
+    \Machinist\Machinist::instance()->wipeAll(true);
 });

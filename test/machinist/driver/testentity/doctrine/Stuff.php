@@ -1,5 +1,5 @@
 <?php
-namespace machinist\driver\testentity\doctrine;
+namespace Machinist\Driver\TestEntity\Doctrine;
 
 /**
  * Description of Stuff
@@ -9,31 +9,35 @@ namespace machinist\driver\testentity\doctrine;
  */
 class Stuff
 {
-	/**
-	 * @Id
-	 * @GeneratedValue
-	 * @Column(type="integer")
-	 */
-	private $id;
+    /**
+     * @Id
+     * @GeneratedValue
+     * @Column(type="integer")
+     */
+    private $id;
 
-	/**
-	 * @Column(type="string", length=100)
-	 */
-	private $name;
+    /**
+     * @Column(type="string", length=100)
+     */
+    private $name;
 
-	public function getId() {
-		return $this->id;
-	}
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function setId($id) {
-		$this->id = $id;
-	}
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-	public function getName() {
-		return $this->name;
-	}
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	public function setName($name) {
-		$this->name = $name;
-	}
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 }

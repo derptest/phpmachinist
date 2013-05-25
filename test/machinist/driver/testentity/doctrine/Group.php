@@ -1,5 +1,5 @@
 <?php
-namespace machinist\driver\testentity\doctrine;
+namespace Machinist\Driver\TestEntity\Doctrine;
 
 /**
  * Description of Group
@@ -10,31 +10,35 @@ namespace machinist\driver\testentity\doctrine;
  */
 class Group
 {
-	/**
-	 * @Id
-	 * @GeneratedValue
-	 * @Column(type="integer")
-	 */
-	private $id;
+    /**
+     * @Id
+     * @GeneratedValue
+     * @Column(type="integer")
+     */
+    private $id;
 
-	/**
-	 * @Column(type="string", length=255)
-	 */
-	private $name;
+    /**
+     * @Column(type="string", length=255)
+     */
+    private $name;
 
-	public function getId() {
-		return $this->id;
-	}
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function setId($id) {
-		$this->id = $id;
-	}
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-	public function getName() {
-		return $this->name;
-	}
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	public function setName($name) {
-		$this->name = $name;
-	}
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 }
