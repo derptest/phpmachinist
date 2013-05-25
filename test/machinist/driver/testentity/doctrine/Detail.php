@@ -1,5 +1,5 @@
 <?php
-namespace machinist\driver\testentity\doctrine;
+namespace Machinist\Driver\TestEntity\Doctrine;
 
 /**
  * Test Doctrine Entity
@@ -9,44 +9,50 @@ namespace machinist\driver\testentity\doctrine;
  */
 class Detail
 {
-	/**
-	 * @Id
-	 * @GeneratedValue
-	 * @Column(type="integer")
-	 */
-	private $id;
+    /**
+     * @Id
+     * @GeneratedValue
+     * @Column(type="integer")
+     */
+    private $id;
 
-	/**
-	 * @Column(type="string", length=100)
-	 */
-	private $name;
+    /**
+     * @Column(type="string", length=100)
+     */
+    private $name;
 
-	/**
-	 * @OneToMany(targetEntity="Master", mappedBy="detail")
-	 */
-	private $masters;
+    /**
+     * @OneToMany(targetEntity="Master", mappedBy="detail")
+     */
+    private $masters;
 
-	public function __conctruct() {
-		$this->masters = new \Doctrine\Common\Collections\ArrayCollection();
-	}
+    public function __conctruct()
+    {
+        $this->masters = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
-	public function getId() {
-		return $this->id;
-	}
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function setId($id) {
-		$this->id = $id;
-	}
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-	public function getName() {
-		return $this->name;
-	}
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	public function setName($name) {
-		$this->name = $name;
-	}
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 
-	public function getMasters() {
-		return $this->masters;
-	}
+    public function getMasters()
+    {
+        return $this->masters;
+    }
 }
