@@ -12,7 +12,7 @@ several projects:
 They're totally awesome. Just either in the wrong language, or didn't quite do what I wanted.
 
 ## Install
-Add the package phpmachinist/phpmachinist to your composer.json
+Add the package derptest/phpmachinist to your composer.json
 For more information about Composer, please visit http://getcomposer.org
 
 ## Examply thing

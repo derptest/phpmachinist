@@ -34,7 +34,6 @@
 		"ext-mongo": "*",
 		"phake/phake": "2.0.*@alpha",
 		"doctrine/orm": ">=2.0.0",
-        "phpunit/phpunit": "*",
-        "behat/behat": "*"
+        "phpunit/phpunit": "*"
 	}
 }
