@@ -50,7 +50,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
     public function testStaticWipeAllCall()
     {
         $bp1 = Phake::mock('\DerpTest\Machinist\Blueprint');
-        $bp2 = Phake::mock('\DerpTest\  Machinist\Blueprint');
+        $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
         $store = Phake::mock('\DerpTest\Machinist\Driver\Store');
         $machinist->Store($store);
