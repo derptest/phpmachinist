@@ -1,12 +1,12 @@
 <?php
 namespace DerpTest\Machinist;
 
-use DerpTest\Machinist\Driver\Store;
+use DerpTest\Machinist\Store\Store;
 
 class Machine implements \ArrayAccess, \IteratorAggregate
 {
     /**
-     * @var Driver\Store
+     * @var Store\Store
      */
     private $store;
 

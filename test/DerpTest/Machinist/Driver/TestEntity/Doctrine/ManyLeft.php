@@ -1,5 +1,5 @@
 <?php
-namespace DerpTest\Machinist\Driver\TestEntity\Doctrine;
+namespace DerpTest\Machinist\Store\TestEntity\Doctrine;
 
 use Doctrine\Common\Collections\ArrayCollection;
 

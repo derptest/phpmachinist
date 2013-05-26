@@ -1,8 +1,8 @@
 <?php
-namespace DerpTest\Machinist\Driver;
+namespace DerpTest\Machinist\Store;
 
 use DerpTest\Machinist\Blueprint;
-use DerpTest\Machinist\Driver\MongoDB as MongoDBDriver;
+use DerpTest\Machinist\Store\MongoDB as MongoDBDriver;
 use DerpTest\Machinist\Machinist;
 use DerpTest\Machinist\Relationship;
 use MongoDB;

@@ -1,12 +1,12 @@
 <?php
 namespace DerpTest\Machinist\Functions;
-use DerpTest\Machinist\Driver\Store;
+use DerpTest\Machinist\Store\Store;
 use DerpTest\Machinist\Machinist;
 
 /**
  * A bunch of functions to shorten some of the syntax for
  * doing things.
- * @param \DerpTest\Machinist\Driver\Store $store
+ * @param \DerpTest\Machinist\Store\Store $store
  * @param string $name
  * @return void
  */

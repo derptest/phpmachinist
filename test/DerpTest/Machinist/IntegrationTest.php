@@ -1,5 +1,5 @@
 <?php
-use DerpTest\Machinist\Driver\SqlStore;
+use DerpTest\Machinist\Store\SqlStore;
 use DerpTest\Machinist\Machinist;
 
 class IntegrationTest extends PHPUnit_Framework_TestCase

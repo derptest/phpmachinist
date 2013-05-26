@@ -6,7 +6,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $this->store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $this->machinist = Phake::mock('\DerpTest\Machinist\Machinist');
         Phake::when($this->machinist)
             ->getStore(Phake::equalTo('default'))

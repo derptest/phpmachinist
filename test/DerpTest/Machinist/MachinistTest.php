@@ -34,7 +34,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp1 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
-        $store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $machinist->Store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
@@ -52,7 +52,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp1 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
-        $store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $machinist->Store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
@@ -68,7 +68,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp1 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
-        $store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $machinist->Store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
@@ -84,7 +84,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp1 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
-        $store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $machinist->Store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
@@ -100,7 +100,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp1 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
-        $store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $machinist->Store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
@@ -117,7 +117,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $bp3 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
-        $store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $machinist->Store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
@@ -137,7 +137,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
     {
         $bp1 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
-        $store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $machinist->Store($store);
         $machinist->addBlueprint('bp1', $bp1);
         Machinist::wipe('bp1', true, array('bp1'));

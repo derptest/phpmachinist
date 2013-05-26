@@ -9,7 +9,7 @@ class MachineTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->store = Phake::mock('\DerpTest\Machinist\Driver\Store');
+        $this->store = Phake::mock('\DerpTest\Machinist\Store\Store');
         $this->machine = new Machine($this->store, 'some_table', array('name' => "awesome"));
     }
 

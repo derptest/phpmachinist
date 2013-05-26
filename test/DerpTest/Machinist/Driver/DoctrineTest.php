@@ -1,13 +1,13 @@
 <?php
-namespace DerpTest\Machinist\Driver;
+namespace DerpTest\Machinist\Store;
 
-use DerpTest\Machinist\Driver\TestEntity\Doctrine\Group;
-use DerpTest\Machinist\Driver\TestEntity\Doctrine\Stuff;
-use DerpTest\Machinist\Driver\TestEntity\Doctrine\SomeStuff;
-use DerpTest\Machinist\Driver\TestEntity\Doctrine\Master;
-use DerpTest\Machinist\Driver\TestEntity\Doctrine\Detail;
-use DerpTest\Machinist\Driver\TestEntity\Doctrine\ManyLeft;
-use DerpTest\Machinist\Driver\TestEntity\Doctrine\ManyRight;
+use DerpTest\Machinist\Store\TestEntity\Doctrine\Group;
+use DerpTest\Machinist\Store\TestEntity\Doctrine\Stuff;
+use DerpTest\Machinist\Store\TestEntity\Doctrine\SomeStuff;
+use DerpTest\Machinist\Store\TestEntity\Doctrine\Master;
+use DerpTest\Machinist\Store\TestEntity\Doctrine\Detail;
+use DerpTest\Machinist\Store\TestEntity\Doctrine\ManyLeft;
+use DerpTest\Machinist\Store\TestEntity\Doctrine\ManyRight;
 
 /**
  * Description of DoctrineTest
@@ -30,7 +30,7 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         // Build an Entity Manager
-        $pdo = new \PDO($_ENV['Doctrine_Driver_SQLite_DSN'],
+        $pdo = new \PDO($_ENV['Doctrine_Store_SQLite_DSN'],
             null, null, array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
         $dbal_driver = new \Doctrine\DBAL\Driver\PDOSqlite\Driver();
         $conn = new \Doctrine\DBAL\Connection(array('pdo' => $pdo), $dbal_driver);
@@ -39,8 +39,8 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
         $orm_config->setAutoGenerateProxyClasses(true);
         $orm_config->setMetadataDriverImpl(
             $orm_config->newDefaultAnnotationDriver(__DIR__ . '/TestEntity/Doctrine'));
-        $orm_config->setProxyDir($_ENV['Doctrine_Driver_Proxy_Root_Directory']);
-        $orm_config->setProxyNamespace('DerpTest\Machinist\Driver\TestEntity\Doctrine\proxy');
+        $orm_config->setProxyDir($_ENV['Doctrine_Store_Proxy_Root_Directory']);
+        $orm_config->setProxyNamespace('DerpTest\Machinist\Store\TestEntity\Doctrine\proxy');
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $orm_config, null);
 
         // Build the schema for testing
@@ -50,7 +50,7 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
         $schema_tool->createSchema($metadatas);
 
         $this->driver = new Doctrine($this->em,
-            array('DerpTest\Machinist\\Driver\\TestEntity\\Doctrine'));
+            array('DerpTest\Machinist\\Store\\TestEntity\\Doctrine'));
     }
 
     protected function tearDown()
@@ -74,7 +74,7 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
     public function testEntityNoResolveRequired()
     {
         $driver = new Doctrine($this->em);
-        $id = $driver->primaryKey('DerpTest\Machinist\\Driver\\TestEntity\\Doctrine\\Stuff');
+        $id = $driver->primaryKey('DerpTest\Machinist\\Store\\TestEntity\\Doctrine\\Stuff');
         $this->assertEquals('id', $id);
     }
 
@@ -82,7 +82,7 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
     {
         $driver = new Doctrine($this->em, array(
             'unresolvable\\one',
-            'DerpTest\Machinist\\Driver\\TestEntity\\Doctrine',
+            'DerpTest\Machinist\\Store\\TestEntity\\Doctrine',
             'unresolvable\\two'
         ));
         $this->assertEquals('id', $this->driver->primaryKey('Stuff'));
@@ -97,7 +97,7 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
     public function testInsertStoresCorrectValue()
     {
         $id = $this->driver->insert('Stuff', array('name' => 'stupid'));
-        $entity_name = 'DerpTest\Machinist\Driver\TestEntity\Doctrine\Stuff';
+        $entity_name = 'DerpTest\Machinist\Store\TestEntity\Doctrine\Stuff';
         $stuff = $this->em->find($entity_name, $id);
         $this->assertEquals('stupid', $stuff->getName());
     }

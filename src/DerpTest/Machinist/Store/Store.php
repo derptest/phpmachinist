@@ -1,5 +1,5 @@
 <?php
-namespace DerpTest\Machinist\Driver;
+namespace DerpTest\Machinist\Store;
 
 /**
  * Store is the base interface for all drivers providing access to data stores

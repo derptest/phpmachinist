@@ -1,5 +1,5 @@
 <?php
-namespace DerpTest\Machinist\Driver;
+namespace DerpTest\Machinist\Store;
 
 /**
  * Should provide *most* for the vendor agnostic functionality
@@ -86,7 +86,7 @@ abstract class SqlStore implements Store
      * @static
      * @throws \InvalidArgumentException
      * @param \PDO $pdo
-     * @return \DerpTest\Machinist\Driver\Store
+     * @return \DerpTest\Machinist\Store\Store
      */
     public static function fromPdo(\PDO $pdo)
     {
@@ -94,10 +94,10 @@ abstract class SqlStore implements Store
         switch ($driver) {
             case 'sqlite':
                 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'Sqlite.php');
-                return new \DerpTest\Machinist\Driver\Sqlite($pdo);
+                return new \DerpTest\Machinist\Store\Sqlite($pdo);
             case 'mysql':
                 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'Mysql.php');
-                return new \DerpTest\Machinist\Driver\Mysql($pdo);
+                return new \DerpTest\Machinist\Store\Mysql($pdo);
             default:
                 throw new \InvalidArgumentException("Unsupported PDO drive {$driver}.");
         }

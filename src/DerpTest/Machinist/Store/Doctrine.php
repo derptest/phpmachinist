@@ -1,5 +1,5 @@
 <?php
-namespace DerpTest\Machinist\Driver;
+namespace DerpTest\Machinist\Store;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;

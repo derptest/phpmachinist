@@ -1,7 +1,7 @@
 <?php
 namespace DerpTest\Machinist;
 
-use DerpTest\Machinist\Driver\Store;
+use DerpTest\Machinist\Store\Store;
 
 /**
  * Do things.. Machinary style.
@@ -48,7 +48,7 @@ class Machinist
     /**
      * @throws \InvalidArgumentException
      * @param string $name
-     * @return \DerpTest\Machinist\Driver\Store
+     * @return \DerpTest\Machinist\Store\Store
      */
     public function getStore($name = 'default')
     {

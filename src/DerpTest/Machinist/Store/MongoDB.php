@@ -1,5 +1,5 @@
 <?php
-namespace DerpTest\Machinist\Driver;
+namespace DerpTest\Machinist\Store;
 
 use DerpTest\Machinist\Error;
 

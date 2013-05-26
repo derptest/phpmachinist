@@ -1,5 +1,5 @@
 <?php
-use DerpTest\Machinist\Driver\SqlStore;
+use DerpTest\Machinist\Store\SqlStore;
 
 class MysqlTest extends PHPUnit_Framework_TestCase
 {
@@ -9,9 +9,9 @@ class MysqlTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->pdo = Phake::partialMock('PDO',
-            $_ENV['MySQL_Driver_DSN'],
-            $_ENV['MySQL_Driver_User'],
-            $_ENV['MySQL_Driver_Password']);
+            $_ENV['MySQL_Store_DSN'],
+            $_ENV['MySQL_Store_User'],
+            $_ENV['MySQL_Store_Password']);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->pdo->exec('CREATE DATABASE IF NOT EXISTS `machinist_test`;');
         $this->pdo->exec('USE `machinist_test`;');
@@ -39,7 +39,7 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 
     public function testSqlStoreGetsInstance()
     {
-        $this->assertInstanceOf('\DerpTest\Machinist\Driver\Mysql', SqlStore::fromPdo($this->pdo));
+        $this->assertInstanceOf('\DerpTest\Machinist\Store\Mysql', SqlStore::fromPdo($this->pdo));
     }
 
     public function testGetPrimaryKey()

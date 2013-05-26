@@ -1,5 +1,5 @@
 <?php
-use DerpTest\Machinist\Driver\SqlStore;
+use DerpTest\Machinist\Store\SqlStore;
 
 class SqliteTest extends PHPUnit_Framework_TestCase
 {
@@ -10,7 +10,7 @@ class SqliteTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->pdo = Phake::partialMock('PDO', $_ENV['SQLite_Driver_DSN']);
+        $this->pdo = Phake::partialMock('PDO', $_ENV['SQLite_Store_DSN']);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->pdo->exec('DROP TABLE IF EXISTS `stuff`;');
         $this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100) );');
@@ -40,7 +40,7 @@ class SqliteTest extends PHPUnit_Framework_TestCase
 
     public function testSqlStoreGetsInstance()
     {
-        $this->assertInstanceOf('\DerpTest\Machinist\Driver\Sqlite',
+        $this->assertInstanceOf('\DerpTest\Machinist\Store\Sqlite',
             SqlStore::fromPdo($this->pdo));
     }
 

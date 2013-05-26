@@ -1,6 +1,6 @@
 <?php
-namespace DerpTest\Machinist\Driver;
-use DerpTest\Machinist\Driver\SqlStore;
+namespace DerpTest\Machinist\Store;
+use DerpTest\Machinist\Store\SqlStore;
 
 /**
  * SQLite Specific store support.
