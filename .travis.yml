@@ -9,5 +9,9 @@ matrix:
   allow_failures:
     - php: 5.5
 
+services:
+  - mongodb
+
 before_script:
-  - composer install --dev
+  - pecl -q install -f mongo && echo "extension=mongo.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - composer install --dev --no-interaction --prefer-source
