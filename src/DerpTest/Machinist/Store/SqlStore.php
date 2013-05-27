@@ -61,6 +61,7 @@ abstract class SqlStore implements Store
      * @param string $table Name of table to remove all data
      * @param bool $truncate Will use truncate to delete data from table when set
      * to true
+     * @return int
      */
     public function wipe($table, $truncate)
     {
