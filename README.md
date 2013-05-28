@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/derptest/phpmachinist.png?branch=master)](https://travis-ci.org/derptest/phpmachinist)
 # PHPMachinist: Testing Object Factory
 
 ## What???!??!
