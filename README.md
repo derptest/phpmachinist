@@ -16,6 +16,31 @@ They're totally awesome. Just either in the wrong language, or didn't quite do w
 Add the package derptest/phpmachinist to your composer.json
 For more information about Composer, please visit http://getcomposer.org
 
+## Configure
+Configuration of PHP Machinist happens in two steps:
+
+1. Register data stores
+    Registering data stores is done via either the static `Machinist::Store()` method or the
+`addStore()` method on a Machinist instance.  Both methods take the same parameters, a `Store`
+instance and an optional name for that store.  If no name is given, it will default to `default`.
+Below is an example of both:
+
+    ```php
+    <?php
+    use DerpTest\Machinist\Machinist;
+    use DerpTest\Machinist\Store\SqlStore;
+    
+    // This store will be referenced by the name "default"
+    Machinist::Store(SqlStore::fromPdo(new \PDO('sqlite::memory:'));
+    
+    // This store will be referenced by the name "non-default"
+    Machinist::instance()->addStore(
+        SqlStore::fromPdo(new \PDO('sqlite::memory:'),
+        'non-default'
+    );
+    ```
+
+
 ## Examply thing
 some tables:
 
