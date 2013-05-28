@@ -85,9 +85,10 @@ mention faster to write.
         array(
             'role'    => 'USER',                           // The user will default to the STANDARD_USER role
             'active'  => true                              // The user will default to active
-            'company' => Machinist::Relationship($company) // Create relationshi
+            'company' => Machinist::Relationship($company) // Create relationship
         ),
-        'user',                                            // The "user" table/collection to used
+        'user',                                            // The "user" table/collection to used.  Not required
+                                                           // as the name is the same as the table/collection
         'default'                                          // Data store.  Not required if "default"
     );
     
@@ -99,46 +100,55 @@ mention faster to write.
             'active'  => true                              // The user will default to active
             'company' => Machinist::Relationship($company) // Create relationship with company blueprint
         ),
-        'user'                                             // The "user" table/collection to used
+        'user'                                             // The "user" table/collection to used.  Required as
+                                                           // the blueprint name is not the same as the
+                                                           // table/collection
     );
         
     ```
-    
 
-## Examply thing
-some tables:
+## Relationships in depth
+Relationships are quite possibly the strongest feature of PHP Machinist.  They allow you to quickly associate
+related data without having to worry about primary keys, foreign keys, and all that other nonsense in your actual tests.
+They will even do some _"find or create"_ magic for you.  Here is how you use the Blueprints from the example above to
+create two users and one company reqlly quickly.
 
-	create table `stuff` ( 
-		`id` INTEGER PRIMARY KEY AUTOINCREMENT, 
-		`name` varchar(100), 
-		`box_id` INTEGER NULL DEFAULT NULL
-    );
-    create table `box` (
-        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-        `type` varchar(100)
-    );
+```php
+<?php
+// ...
+ 
+Machinist::Blueprint('user')->make(
+    array(
+        'username' => 'pedro@voteforpedro.org',
+        'company' => array('name' => 'Pedro for Class President')
+    )
+);
 
 
-	use machinist\Machinist;
-	use machinist\driver\SqlStore;
-	// setup a default connection to use
-	Machinist::Store(SqlStore::fromPdo(new \PDO('sqlite::memory:'));
-	// make a blueprint for cardboardb oxes.. in the box table.. with a type..
-	$boxBlueprint = Machinist::Blueprint("cardboardbox", "box", array("type" => "cardboard"));
+Machinist::Blueprint('user')->make(
+    array(
+        'username' => 'napoleon@voteforpedro.org',
+        'company' => array('name' => 'Pedro for Class President')
+    )
+);
 
-	Machinist::Blueprint("crayon",
-	    array(
-	        "name" => "crayon",
-	        "box" => Machinist::Relationship($boxBlueprint)->local("box_id"),
-	    ),
-	    "stuff");
+```
 
-	$crayon = Machinist::Blueprint("crayon")->make();
-    $redCrayon = Machinist::Blueprint("crayon")->make(array("name" => "red crayon"));
+That's the fill sum of the code needed to create two users and one comopany.  PHP Machinist did some magic on the first
+blueprint make call.  It looked for a company with the `name` of `Pedro for Class President`.  It didn't find one, so
+it created a company and used that for the relationship.  For the second `make()` call, it found the company created in
+the first call and used that company for the relationship.
 
-## Testing
-Testing of the source code can be done with the PHPUnit version 3.6 or better.
+Relationships will also populate data from data finds as well.  Here is an example using the same blueprints and the
+data created from the privious example.
 
-To begin testing you must first add the dependencies by performing a Composer install with the --dev parameter  This will place the all of the dependencies in the vendor directory.  For more information on performing a Composer install, please visit http://getcomposer.org/doc/00-intro.md#installation
+```php
+<?php
+// ...
+ 
+$pedro = Machinist::Blueprint('user')->findOne(array('username' => 'pedro@voteforpedro.org'));
+echo ($pedro->company->name);
+```
 
-A default phpunit.xml.dist is configured in the test directory.  You can create your own phpunit.xml and it will be ignored by git.
+This will result in `Pedro for Class President` being shown on the screen.
+
