@@ -80,7 +80,7 @@ mention faster to write.
     Machinist::instance()->addBlueprint('company', $company);
     
     // Create a standard user blueprint using the "easy way"
-    Machnist::Blueprint(
+    Machinist::Blueprint(
         'user',                                            // This is the blueprint name
         array(
             'role'    => 'USER',                           // The user will default to the STANDARD_USER role
@@ -92,7 +92,7 @@ mention faster to write.
     );
     
     // Create an administrator user blueprint using the "easy way"
-    Machnist::Blueprint(
+    Machinist::Blueprint(
         'administratorUser',                               // This is the blueprint name
         array(
             'role'    => 'ADMINISTRATOR',                  // The user will default to the STANDARD_USER role
