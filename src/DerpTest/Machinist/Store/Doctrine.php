@@ -133,6 +133,24 @@ class Doctrine implements Store
         $this->_em->clear($class_name);
     }
 
+    /**
+     * Count the total number of records for a table
+     *
+     * @param $table Name of table or collection
+     * @return int Number of records
+     */
+    public function count($table)
+    {
+        $class_name = $this->resolveEntityName($table);
+        $rows = $this->_em->getRepository($class_name)
+            ->createQueryBuilder('e')
+            ->select()
+            ->getQuery()
+            ->execute();
+        return count($rows);
+    }
+
+
     protected function resolveEntityName($table)
     {
         $class_name = null;

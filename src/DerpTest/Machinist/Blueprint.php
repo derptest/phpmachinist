@@ -189,6 +189,15 @@ class Blueprint
         $this->machinist->getStore($this->store)->wipe($this->getTable(), $truncate);
     }
 
+    /**
+     * Get the total number of records in the store for this blueprint
+     * 
+     * @return int NUmber of records
+     */
+    public function count()
+    {
+        return $this->machinist->getStore($this->store)->count($this->table);
+    }
 
     private function buildData($overrides)
     {

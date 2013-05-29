@@ -210,4 +210,17 @@ class DoctrineTest extends \PHPUnit_Framework_TestCase
                 'Unexpected value for ID in left for right2');
         }
     }
+
+    public function testCountOnEmptyReturnZero()
+    {
+        $count = $this->driver->count('Stuff');
+        $this->assertEquals(0, $count);
+    }
+
+    public function testCountOnOneRowReturnsOne()
+    {
+            $this->driver->insert('Stuff', array('name' => 'stupid'));
+        $count = $this->driver->count('Stuff');
+        $this->assertEquals(1, $count);
+    }
 }

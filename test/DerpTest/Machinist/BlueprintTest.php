@@ -232,4 +232,20 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
         $bp = new Blueprint($this->machinist, 'test_table', null);
         $this->assertFalse($bp->hasRelationship("hello"));
     }
+
+    public function testCount()
+    {
+        $bp = new Blueprint(
+            $this->machinist,
+            'test_table'
+        );
+        $expected = 5;
+        Phake::when($this->store)
+            ->count(Phake::anyParameters())
+            ->thenReturn(5);
+
+        $actual = $bp->count();
+        Phake::verify($this->store)->count('test_table');
+        $this->assertEquals($expected, $actual);
+    }
 }

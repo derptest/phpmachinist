@@ -225,6 +225,20 @@ class MongoDBTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('other stuff', $machine->other_stuff->name);
     }
 
+
+    public function testCountOnEmptyReturnZero()
+    {
+        $count = $this->driver->count('Stuff');
+        $this->assertEquals(0, $count);
+    }
+
+    public function testCountOnOneRowReturnsOne()
+    {
+        $this->driver->insert('Stuff', array('name' => 'count one stupid'));
+        $count = $this->driver->count('Stuff');
+        $this->assertEquals(1, $count);
+    }
+
     protected function setUp()
     {
         parent::setUp();

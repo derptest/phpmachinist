@@ -30,7 +30,7 @@ interface Store
      * Find all data entities matching the data provided on the table
      *
      * @param string $table Name of table or collection
-     * @param array $mixed If an array is specified, the key value pairs will
+     * @param mixed $data If an array is specified, the key value pairs will
      * be used as key/value parameters for a search.  If a non-array is specified,
      * it will be assumed that a primary key search is being performed and the
      * value specified will be used as the key for that search.
@@ -38,6 +38,14 @@ interface Store
      * entities.  Any other value returned will be assumed to be a single entity.
      */
     public function find($table, $data);
+
+    /**
+     * Count the total number of records for a table
+     *
+     * @param $table Name of table or collection
+     * @return int Number of records
+     */
+    public function count($table);
 
     /**
      * Wipe all data from the provided table/collection

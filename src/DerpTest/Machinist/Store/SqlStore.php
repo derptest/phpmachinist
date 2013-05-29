@@ -33,6 +33,24 @@ abstract class SqlStore implements Store
         }
     }
 
+    /**
+     * Count the total number of records for a table
+     *
+     * @param $table Name of table or collection
+     * @return int Number of records
+     */
+    public function count($table)
+    {
+        $query = $this->pdo()->prepare(sprintf(
+            'SELECT count(%s) from %s',
+            $this->quoteColumn($this->primaryKey($table)),
+            $this->quoteTable($table)
+        ));
+        $query->execute();
+        return (int) $query->fetchColumn();
+    }
+
+
     public function findByColumnValues($table, $data)
     {
         $where = array();

@@ -105,4 +105,17 @@ class MongoDB implements Store
                 $e);
         }
     }
+
+    /**
+     * Count the total number of records for a table
+     *
+     * @param $table Name of table or collection
+     * @return int Number of records
+     */
+    public function count($table)
+    {
+        return $this->mongoDB->selectCollection($table)->count();
+    }
+
+
 }
