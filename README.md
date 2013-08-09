@@ -32,11 +32,11 @@ Below is an example of both:
     use DerpTest\Machinist\Store\SqlStore;
     
     // This store will be referenced by the name "default"
-    Machinist::Store(SqlStore::fromPdo(new \PDO('sqlite::memory:'));
+    Machinist::Store(SqlStore::fromPdo(new \PDO('sqlite::memory:')));
     
     // This store will be referenced by the name "non-default"
     Machinist::instance()->addStore(
-        SqlStore::fromPdo(new \PDO('sqlite::memory:'),
+        SqlStore::fromPdo(new \PDO('sqlite::memory:')),
         'non-default'
     );
     ```
@@ -64,7 +64,7 @@ mention faster to write.
     use DerpTest\Machinist\Blueprint;
     
     // Register the default data store
-    Machinist::Store(SqlStore::fromPdo(new \PDO('sqlite::memory:'));
+    Machinist::Store(SqlStore::fromPdo(new \PDO('sqlite::memory:')));
     
     // Create a company blueprint using the "hard way".  This will be used in a relationship
     $company = new Blueprint(
