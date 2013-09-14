@@ -31,7 +31,6 @@
     "require-dev": {
         "ext-pdo_mysql": "*",
         "ext-pdo_sqlite": "*",
-        "ext-mongo": "*",
         "phake/phake": "v2.0.0-alpha1@alpha",
         "doctrine/orm": "~2.0",
         "phpunit/phpunit": "*"

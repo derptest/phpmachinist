@@ -28,7 +28,5 @@
 		<env name="MySQL_Store_Password" value=""/>
 		<env name="Doctrine_Store_SQLite_DSN" value="sqlite::memory:" />
 		<env name="Doctrine_Store_Proxy_Root_Directory" value="/tmp/machinist/proxy" />
-		<env name="DoctrineMongoDB_DSN" value="mongodb://localhost" />
-		<env name="DoctrineMongoDB_DB" value="phpmachinist" />
  	</php>
 </phpunit>

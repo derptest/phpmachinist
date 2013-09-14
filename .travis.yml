@@ -5,9 +5,5 @@ php:
   - 5.4
   - 5.5
 
-services:
-  - mongodb
-
 before_script:
-  - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer selfupdate && composer install --no-interaction
