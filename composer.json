@@ -3,7 +3,7 @@
     "description": "Testing object factory for PHP",
     "license": "MIT",
     "type": "library",
-    "keywords": ["machinist","php","test","object", "factory", "blueprint"],
+    "keywords": ["machinist", "php", "test", "object", "factory", "blueprint"],
     "authors": [
         {
             "name": "Stephan Soileau",
@@ -19,21 +19,21 @@
         "psr-0": {
             "DerpTest\\Machinist": "src"
         }
-	},
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"
         }
     },
-	"require": {
-		"php": ">5.3.0"
-	},
-	"require-dev": {
-		"ext-pdo_mysql": "*",
-		"ext-pdo_sqlite": "*",
-		"ext-mongo": "*",
-		"phake/phake": "v2.0.0-alpha1@alpha",
-		"doctrine/orm": ">=2.0.0",
+    "require": {
+        "php": ">5.3.0"
+    },
+    "require-dev": {
+        "ext-pdo_mysql": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-mongo": "*",
+        "phake/phake": "v2.0.0-alpha1@alpha",
+        "doctrine/orm": "~2.0",
         "phpunit/phpunit": "*"
-	}
+    }
 }
