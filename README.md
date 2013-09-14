@@ -111,7 +111,7 @@ mention faster to write.
 Relationships are quite possibly the strongest feature of PHP Machinist.  They allow you to quickly associate
 related data without having to worry about primary keys, foreign keys, and all that other nonsense in your actual tests.
 They will even do some _"find or create"_ magic for you.  Here is how you use the Blueprints from the example above to
-create two users and one company reqlly quickly.
+create two users and one company really quickly.
 
 ```php
 <?php
@@ -134,13 +134,13 @@ Machinist::Blueprint('user')->make(
 
 ```
 
-That's the fill sum of the code needed to create two users and one comopany.  PHP Machinist did some magic on the first
+That's the fill sum of the code needed to create two users and one company.  PHP Machinist did some magic on the first
 blueprint make call.  It looked for a company with the `name` of `Pedro for Class President`.  It didn't find one, so
 it created a company and used that for the relationship.  For the second `make()` call, it found the company created in
 the first call and used that company for the relationship.
 
 Relationships will also populate data from data finds as well.  Here is an example using the same blueprints and the
-data created from the privious example.
+data created from the previous example.
 
 ```php
 <?php
@@ -152,3 +152,5 @@ echo ($pedro->company->name);
 
 This will result in `Pedro for Class President` being shown on the screen.
 
+## License
+See LICENSE file in the project
