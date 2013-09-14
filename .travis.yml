@@ -13,4 +13,5 @@ services:
   - mongodb
 
 before_script:
-  - composer install --dev --no-interaction --prefer-source
+  - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - composer selfupdate && composer install --no-interaction
