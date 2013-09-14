@@ -1,17 +1,12 @@
 <?php
 namespace DerpTest\Machinist\Store;
 
-use DerpTest\Machinist\Store\TestEntity\Doctrine\Group;
-use DerpTest\Machinist\Store\TestEntity\Doctrine\Stuff;
-use DerpTest\Machinist\Store\TestEntity\Doctrine\SomeStuff;
 use DerpTest\Machinist\Store\TestEntity\Doctrine\Master;
 use DerpTest\Machinist\Store\TestEntity\Doctrine\Detail;
 use DerpTest\Machinist\Store\TestEntity\Doctrine\ManyLeft;
 use DerpTest\Machinist\Store\TestEntity\Doctrine\ManyRight;
 
 /**
- * Description of DoctrineTest
- *
  * @author Adam L. Englander <adam.l.englander@gmail.com>
  */
 class DoctrineTest extends \PHPUnit_Framework_TestCase

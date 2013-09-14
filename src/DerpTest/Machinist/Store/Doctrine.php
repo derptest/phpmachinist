@@ -4,11 +4,6 @@ namespace DerpTest\Machinist\Store;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Doctrine 2 driver for PHP Machinist
  *
