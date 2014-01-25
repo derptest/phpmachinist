@@ -4,16 +4,6 @@ namespace DerpTest\Machinist;
 use \DerpTest\Machinist\Relationship;
 use \DerpTest\Machinist\Machine;
 
-class FindException extends \Exception
-{
-
-}
-
-class MakeException extends \Exception
-{
-
-}
-
 class Blueprint
 {
     private $table;
