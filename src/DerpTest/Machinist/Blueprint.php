@@ -134,7 +134,6 @@ class Blueprint
     {
         $store = $this->machinist->getStore($this->store);
         $table = $this->getTable($data);
-        $pk = $store->primaryKey($table);
         $return = array();
         $rows = $store->find($table, $data);
         if (!is_array($rows)) {
