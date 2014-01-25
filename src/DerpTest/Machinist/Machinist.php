@@ -190,24 +190,4 @@ class Machinist
             self::instance()->getBlueprint($bp)->wipe($truncate);
         }
     }
-
-    /**
-     * Recursively load all PHP files in a directory. Seems this  is common for Machinist projects
-     * so I'm putting it here for convenience.
-     * @static
-     * @param  $dir
-     * @return void
-     */
-    public static function load($dir)
-    {
-        $files = glob($dir . DIRECTORY_SEPARATOR . "*");
-        foreach ($files as $file) {
-            if (is_file($file) && preg_match('/\.php$/', $file)) {
-                require_once($file);
-            } elseif (is_dir($file) && basename($file) != ".." && basename($file) != ".") {
-                self::load($dir);
-            }
-        }
-    }
-
 }
