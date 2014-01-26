@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/derptest/phpmachinist.png?branch=master)](https://travis-ci.org/derptest/phpmachinist)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/688f98fb-99f9-4c37-b2d2-f817f846f992/mini.png)](https://insight.sensiolabs.com/projects/688f98fb-99f9-4c37-b2d2-f817f846f992)
 # PHPMachinist: Testing Object Factory
 
 ## What???!??!
