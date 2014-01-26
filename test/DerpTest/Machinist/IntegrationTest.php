@@ -1,6 +1,6 @@
 <?php
-use DerpTest\Machinist\Store\SqlStore;
 use DerpTest\Machinist\Machinist;
+use DerpTest\Machinist\Store\SqlStore;
 
 class IntegrationTest extends PHPUnit_Framework_TestCase
 {
@@ -13,11 +13,11 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $this->pdo->exec('create table `stuff` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100), `box_id` INTEGER NULL DEFAULT NULL);');
         $this->pdo->exec('create table `box` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` varchar(100) );');
         $this->pdo->exec('CREATE TABLE `some_stuff` (
-  			`some_id` int(10)  NOT NULL,
-  			`stuff_id` int(10)  NOT NULL,
-  			`name` VARCHAR(100),
-			PRIMARY KEY (`some_id`,`stuff_id`));');
-        \DerpTest\Machinist\Machinist::Store(SqlStore::fromPdo($this->pdo));
+          `some_id` int(10)  NOT NULL,
+          `stuff_id` int(10)  NOT NULL,
+          `name` VARCHAR(100),
+          PRIMARY KEY (`some_id`,`stuff_id`));');
+        \DerpTest\Machinist\Machinist::store(SqlStore::fromPdo($this->pdo));
 
     }
 
@@ -30,7 +30,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testWeCanCreateOneStuff()
     {
-        $bp_row = Machinist::Blueprint("test", "stuff", array('name' => "hello"))
+        Machinist::blueprint("test", "stuff", array('name' => "hello"))
             ->make();
         $query = $this->pdo->prepare('SELECT * from stuff where id = 1');
         $query->execute(array());
@@ -40,16 +40,16 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testReturnedDataHasPrimaryKeyCorrect()
     {
-        $bp_row = Machinist::Blueprint("test", "stuff", array('name' => "hello"))
+        $bp_row = Machinist::blueprint("test", "stuff", array('name' => "hello"))
             ->make();
         $this->assertEquals(1, $bp_row->getId());
     }
 
     public function testOverridesOverride()
     {
-        $bp = Machinist::Blueprint("test", "stuff", array('name' => "hello"));
+        Machinist::blueprint("test", "stuff", array('name' => "hello"));
 
-        $row = Machinist::Blueprint("test")->make(array('name' => "something else"));
+        $row = Machinist::blueprint("test")->make(array('name' => "something else"));
         $this->assertEquals("something else", $row->name);
 
         $query = $this->pdo->prepare('SELECT * from stuff where id = 1');
@@ -60,11 +60,11 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testOverrideCallable()
     {
-        $bp = Machinist::Blueprint("test", "stuff", array('name' => "hello"));
+        Machinist::blueprint("test", "stuff", array('name' => "hello"));
 
-        $row = Machinist::Blueprint("test")->make(array('name' => function ($d) {
-            return "something else";
-        }));
+        $row = Machinist::blueprint("test")->make(array('name' => function ($d) {
+                return "something else";
+            }));
         $this->assertEquals("something else", $row->name);
 
         $query = $this->pdo->prepare('SELECT * from stuff where id = 1');
@@ -75,14 +75,14 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testForeignKeyThing()
     {
-        $box = Machinist::Blueprint("box", "box", array('name' => 'square box'));
+        $box = Machinist::blueprint("box", "box", array('name' => 'square box'));
 
-        Machinist::Blueprint("stuff_in_a_box", "stuff", array(
+        Machinist::blueprint("stuff_in_a_box", "stuff", array(
             'name' => "hello",
-            'box' => Machinist::Relationship($box)->local('box_id')
+            'box' => Machinist::relationship($box)->local('box_id')
         ));
 
-        $bp_row = Machinist::Blueprint('stuff_in_a_box')->make();
+        $bp_row = Machinist::blueprint('stuff_in_a_box')->make();
 
 
         $query = $this->pdo->prepare('SELECT * from stuff where id = 1');
@@ -96,14 +96,14 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testForeignKeyOverride()
     {
-        $box = Machinist::Blueprint("box", "box", array('name' => 'square box'));
+        $box = Machinist::blueprint("box", "box", array('name' => 'square box'));
 
-        Machinist::Blueprint("stuff_in_a_box", "stuff", array(
+        Machinist::blueprint("stuff_in_a_box", "stuff", array(
             'name' => "hello",
-            'box' => Machinist::Relationship($box)->local('box_id')
+            'box' => Machinist::relationship($box)->local('box_id')
         ));
 
-        $bp_row = Machinist::Blueprint('stuff_in_a_box')->make(
+        $bp_row = Machinist::blueprint('stuff_in_a_box')->make(
             array('box' => array('name' => 'round box'))
         );
 
@@ -118,7 +118,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testDefaultsTbaleToName()
     {
-        $bp_row = Machinist::Blueprint("stuff", array('name' => "whoa it might work"))
+        Machinist::blueprint("stuff", array('name' => "whoa it might work"))
             ->make();
         $query = $this->pdo->prepare('SELECT * from stuff where id = 1');
         $query->execute(array());
@@ -128,14 +128,14 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testThatICanFindAnObject()
     {
-        $box = Machinist::Blueprint("box", "box", array('name' => 'square box'));
+        $box = Machinist::blueprint("box", "box", array('name' => 'square box'));
 
-        $d = Machinist::Blueprint("stuff_in_a_box", "stuff", array(
+        $d = Machinist::blueprint("stuff_in_a_box", "stuff", array(
             'name' => "hello",
-            'box' => Machinist::Relationship($box)->local('box_id')
+            'box' => Machinist::relationship($box)->local('box_id')
         ));
         $wut = $d->make(array('name' => 'dumb', 'box' => array('name' => 'my container')));
-        $stuff = Machinist::Blueprint("stuff_in_a_box")->find(array('name' => 'dumb'));
+        $stuff = Machinist::blueprint("stuff_in_a_box")->find(array('name' => 'dumb'));
         $this->assertInstanceOf('\DerpTest\Machinist\Machine', $stuff[0]);
         $this->assertEquals($wut->getId(), $stuff[0]->getId());
         $this->assertEquals($wut->box->getId(), $stuff[0]->box->getId());
@@ -144,14 +144,14 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testFindOrCreateReturnsExitingObject()
     {
-        $box = Machinist::Blueprint("box", "box", array('name' => 'square box'));
+        $box = Machinist::blueprint("box", "box", array('name' => 'square box'));
 
-        $d = Machinist::Blueprint("stuff_in_a_box", "stuff", array(
+        $d = Machinist::blueprint("stuff_in_a_box", "stuff", array(
             'name' => "hello",
-            'box' => Machinist::Relationship($box)->local('box_id')
+            'box' => Machinist::relationship($box)->local('box_id')
         ));
         $wut = $d->make(array('name' => 'dumb', 'box' => array('name' => 'my container')));
-        $stuff = Machinist::Blueprint("stuff_in_a_box")->findOrCreate(array('name' => 'dumb'));
+        $stuff = Machinist::blueprint("stuff_in_a_box")->findOrCreate(array('name' => 'dumb'));
         $this->assertInstanceOf('\DerpTest\Machinist\Machine', $stuff);
         $this->assertEquals($wut->getId(), $stuff->getId());
         $this->assertEquals($wut->box->getId(), $stuff->box->getId());
@@ -160,13 +160,13 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testFindOrCreateMakesNewObject()
     {
-        $box = Machinist::Blueprint("box", "box", array('name' => 'square box'));
+        $box = Machinist::blueprint("box", "box", array('name' => 'square box'));
 
-        $d = Machinist::Blueprint("stuff_in_a_box", "stuff", array(
+        Machinist::blueprint("stuff_in_a_box", "stuff", array(
             'name' => "hello",
-            'box' => Machinist::Relationship($box)->local('box_id')
+            'box' => Machinist::relationship($box)->local('box_id')
         ));
-        $stuff = Machinist::Blueprint("stuff_in_a_box")->findOrCreate(array('name' => 'A New Name That Ihope is not there'));
+        $stuff = Machinist::blueprint("stuff_in_a_box")->findOrCreate(array('name' => 'A New Name That Ihope is not there'));
         $this->assertInstanceOf('\DerpTest\Machinist\Machine', $stuff);
         $this->assertTrue(is_numeric($stuff->getId()));
         $this->assertEquals("A New Name That Ihope is not there", $stuff->name);
@@ -175,7 +175,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testCreatingSomeStuffWithCompoundKey()
     {
-        $bp = Machinist::Blueprint("some_stuff", array('name' => "awesome"));
+        $bp = Machinist::blueprint("some_stuff", array('name' => "awesome"));
         $d = $bp->make(array('some_id' => 1, 'stuff_id' => 2));
         $this->assertEquals("awesome", $d->name);
         $this->assertEquals(1, $d->some_id);
@@ -184,21 +184,21 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function testFindOneOrSomething()
     {
-        $bp = Machinist::Blueprint("some_stuff", array('name' => "awesome"));
+        $bp = Machinist::blueprint("some_stuff", array('name' => "awesome"));
         $values = array('some_id' => 1, 'stuff_id' => 2);
         $d = $bp->make($values);
 
-        $r = Machinist::Blueprint('some_stuff')->findOne($values);
+        $r = Machinist::blueprint('some_stuff')->findOne($values);
         $this->assertEquals($d->getId(), $r->getId());
     }
 
     public function testFindOrSomething()
     {
-        $bp = Machinist::Blueprint("some_stuff", array('name' => "awesome"));
+        $bp = Machinist::blueprint("some_stuff", array('name' => "awesome"));
         $values = array('some_id' => 1, 'stuff_id' => 2);
         $d = $bp->make($values);
 
-        $r = Machinist::Blueprint('some_stuff')->find($values);
+        $r = Machinist::blueprint('some_stuff')->find($values);
         $this->assertEquals($d->getId(), $r[0]->getId());
     }
 }

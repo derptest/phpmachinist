@@ -95,7 +95,7 @@ class Machinist
      * @param string $store
      * @return Blueprint
      */
-    public static function Blueprint($name, $defaults = null, $table = null, $store = 'default')
+    public static function blueprint($name, $defaults = null, $table = null, $store = 'default')
     {
         $me = self::instance();
         $bp = $me->getBlueprint($name);
@@ -122,7 +122,7 @@ class Machinist
      * @return Relationship
      * @throws \InvalidArgumentException
      */
-    public static function Relationship($bp)
+    public static function relationship($bp)
     {
         $me = self::instance();
         if (is_string($bp)) {
@@ -131,7 +131,7 @@ class Machinist
         if (!$bp instanceof Blueprint) {
             throw new \InvalidArgumentException("Invalid blue print {$bp}");
         }
-        return new \DerpTest\Machinist\Relationship($bp);
+        return new \DerpTest\Machinist\relationship($bp);
     }
 
     /**
@@ -139,7 +139,7 @@ class Machinist
      * @param Store $store
      * @param string $name
      */
-    public static function Store(Store $store, $name = 'default')
+    public static function store(Store $store, $name = 'default')
     {
         self::instance()->addStore($store, $name);
     }

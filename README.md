@@ -22,7 +22,7 @@ Configuration of PHP Machinist happens in two steps:
 
 1. Register data stores
 
-    Registering data stores is done via either the static `Machinist::Store()` method or the
+    Registering data stores is done via either the static `Machinist::store()` method or the
 `addStore()` method on a Machinist instance.  Both methods take the same parameters, a `Store`
 instance and an optional name for that store.  If no name is given, it will default to `default`.
 Below is an example of both:
@@ -33,7 +33,7 @@ Below is an example of both:
     use DerpTest\Machinist\Store\SqlStore;
     
     // This store will be referenced by the name "default"
-    Machinist::Store(SqlStore::fromPdo(new \PDO('sqlite::memory:')));
+    Machinist::store(SqlStore::fromPdo(new \PDO('sqlite::memory:')));
     
     // This store will be referenced by the name "non-default"
     Machinist::instance()->addStore(
@@ -65,7 +65,7 @@ mention faster to write.
     use DerpTest\Machinist\Blueprint;
     
     // Register the default data store
-    Machinist::Store(SqlStore::fromPdo(new \PDO('sqlite::memory:')));
+    Machinist::store(SqlStore::fromPdo(new \PDO('sqlite::memory:')));
     
     // Create a company blueprint using the "hard way".  This will be used in a relationship
     $company = new Blueprint(
@@ -81,12 +81,12 @@ mention faster to write.
     Machinist::instance()->addBlueprint('company', $company);
     
     // Create a standard user blueprint using the "easy way"
-    Machinist::Blueprint(
+    Machinist::blueprint(
         'user',                                            // This is the blueprint name
         array(
             'role'    => 'USER',                           // The user will default to the STANDARD_USER role
             'active'  => true                              // The user will default to active
-            'company' => Machinist::Relationship($company) // Create relationship
+            'company' => Machinist::relationship($company) // Create relationship
         ),
         'user',                                            // The "user" table/collection to used.  Not required
                                                            // as the name is the same as the table/collection
@@ -94,12 +94,12 @@ mention faster to write.
     );
     
     // Create an administrator user blueprint using the "easy way"
-    Machinist::Blueprint(
+    Machinist::blueprint(
         'administratorUser',                               // This is the blueprint name
         array(
             'role'    => 'ADMINISTRATOR',                  // The user will default to the STANDARD_USER role
             'active'  => true                              // The user will default to active
-            'company' => Machinist::Relationship($company) // Create relationship with company blueprint
+            'company' => Machinist::relationship($company) // Create relationship with company blueprint
         ),
         'user'                                             // The "user" table/collection to used.  Required as
                                                            // the blueprint name is not the same as the
@@ -118,7 +118,7 @@ create two users and one company really quickly.
 <?php
 // ...
  
-Machinist::Blueprint('user')->make(
+Machinist::blueprint('user')->make(
     array(
         'username' => 'pedro@voteforpedro.org',
         'company' => array('name' => 'Pedro for Class President')
@@ -126,7 +126,7 @@ Machinist::Blueprint('user')->make(
 );
 
 
-Machinist::Blueprint('user')->make(
+Machinist::blueprint('user')->make(
     array(
         'username' => 'napoleon@voteforpedro.org',
         'company' => array('name' => 'Pedro for Class President')
@@ -147,7 +147,7 @@ data created from the previous example.
 <?php
 // ...
  
-$pedro = Machinist::Blueprint('user')->findOne(array('username' => 'pedro@voteforpedro.org'));
+$pedro = Machinist::blueprint('user')->findOne(array('username' => 'pedro@voteforpedro.org'));
 echo ($pedro->company->name);
 ```
 

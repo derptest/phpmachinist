@@ -7,23 +7,23 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
 {
     public function testBlueprintReturnsSameInstance()
     {
-        $bp1 = Machinist::Blueprint("hello");
-        $bp2 = Machinist::Blueprint("hello");
+        $bp1 = Machinist::blueprint("hello");
+        $bp2 = Machinist::blueprint("hello");
         $this->assertSame($bp1, $bp2);
     }
 
     public function testResetActuallyResets()
     {
-        $bp1 = Machinist::Blueprint("hello");
+        $bp1 = Machinist::blueprint("hello");
         Machinist::reset();
-        $bp2 = Machinist::Blueprint("hello");
+        $bp2 = Machinist::blueprint("hello");
         $this->assertNotSame($bp1, $bp2);
     }
 
     public function testGetBlueprintsHasAll()
     {
-        $bp1 = Machinist::Blueprint("hello1");
-        $bp2 = Machinist::Blueprint("hello2");
+        $bp1 = Machinist::blueprint("hello1");
+        $bp2 = Machinist::blueprint("hello2");
         $bps = Machinist::instance()->getBlueprints();
         $this->assertContains($bp1, $bps);
         $this->assertContains($bp2, $bps);
@@ -35,7 +35,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
         $store = Phake::mock('\DerpTest\Machinist\Store\Store');
-        $machinist->Store($store);
+        Machinist::store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
         $machinist->wipeAll(true);
@@ -53,7 +53,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
         $store = Phake::mock('\DerpTest\Machinist\Store\Store');
-        $machinist->Store($store);
+        Machinist::store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
         Machinist::wipe();;
@@ -69,7 +69,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
         $store = Phake::mock('\DerpTest\Machinist\Store\Store');
-        $machinist->Store($store);
+        Machinist::store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
         Machinist::wipe("bp2");
@@ -85,7 +85,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
         $store = Phake::mock('\DerpTest\Machinist\Store\Store');
-        $machinist->Store($store);
+        Machinist::store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
         Machinist::wipe(true, true);
@@ -101,7 +101,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp2 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
         $store = Phake::mock('\DerpTest\Machinist\Store\Store');
-        $machinist->Store($store);
+        Machinist::store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
         Machinist::wipe("bp2", true);
@@ -118,7 +118,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp3 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
         $store = Phake::mock('\DerpTest\Machinist\Store\Store');
-        $machinist->Store($store);
+        Machinist::store($store);
         $machinist->addBlueprint('bp1', $bp1);
         $machinist->addBlueprint('bp2', $bp2);
         $machinist->addBlueprint('bp3', $bp3);
@@ -138,7 +138,7 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $bp1 = Phake::mock('\DerpTest\Machinist\Blueprint');
         $machinist = Machinist::instance();
         $store = Phake::mock('\DerpTest\Machinist\Store\Store');
-        $machinist->Store($store);
+        Machinist::store($store);
         $machinist->addBlueprint('bp1', $bp1);
         Machinist::wipe('bp1', true, array('bp1'));
     }
@@ -152,12 +152,12 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
     public function testRelationshipWithNoRelationshipThrowsInvalidArgumentException()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        Machinist::Relationship(null);
+        Machinist::relationship(null);
     }
 
     public function testRelationshipWithInvalidRelationshipThrowsInvalidArgumentException()
     {
         $this->setExpectedException('\InvalidArgumentException');
-        Machinist::Relationship('invalid');
+        Machinist::relationship('invalid');
     }
 }
