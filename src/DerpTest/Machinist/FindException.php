@@ -1,4 +1,6 @@
 <?php
+namespace DerpTest\Machinist;
+
 /**
  * @author Adam L. Englander <adam.englander@coupla.co>
  *

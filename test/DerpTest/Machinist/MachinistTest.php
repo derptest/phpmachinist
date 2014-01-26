@@ -142,4 +142,22 @@ class MachinistTest extends \PHPUnit_Framework_TestCase
         $machinist->addBlueprint('bp1', $bp1);
         Machinist::wipe('bp1', true, array('bp1'));
     }
+
+    public function testAskingForInvalidStoreThrownInvalidArgumentException()
+    {
+        $this->setExpectedException('\InvalidArgumentException');
+        Machinist::instance()->getStore('invalid');
+    }
+
+    public function testRelationshipWithNoRelationshipThrowsInvalidArgumentException()
+    {
+        $this->setExpectedException('\InvalidArgumentException');
+        Machinist::Relationship(null);
+    }
+
+    public function testRelationshipWithInvalidRelationshipThrowsInvalidArgumentException()
+    {
+        $this->setExpectedException('\InvalidArgumentException');
+        Machinist::Relationship('invalid');
+    }
 }

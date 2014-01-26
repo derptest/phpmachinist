@@ -4,10 +4,21 @@ use DerpTest\Machinist\Machinist;
 
 class BlueprintTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @Mock
+     * @var \DerpTest\Machinist\Store\Store
+     */
+    private $store;
+
+    /**
+     * @Mock
+     * @var \DerpTest\Machinist\Machinist
+     */
+    private $machinist;
+
     public function setUp()
     {
-        $this->store = Phake::mock('\DerpTest\Machinist\Store\Store');
-        $this->machinist = Phake::mock('\DerpTest\Machinist\Machinist');
+        Phake::initAnnotations($this);
         Phake::when($this->machinist)
             ->getStore(Phake::equalTo('default'))
             ->thenReturn($this->store);
@@ -247,5 +258,35 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
         $actual = $bp->count();
         Phake::verify($this->store)->count('test_table');
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testMakeThrowsMakeExceptionWhenIdEqualsZero()
+    {
+        $this->setExpectedException('\DerpTest\Machinist\MakeException');
+        $bp = new Blueprint(
+            $this->machinist,
+            'test_table'
+        );
+
+        Phake::when($this->store)
+            ->primaryKey(Phake::anyParameters())
+            ->thenReturn(array('a', 'b'));
+
+        $bp->make();
+    }
+
+    public function testFindOneThrowsFindExceptionWhenMoreThanOneRowIsFound()
+    {
+        $this->setExpectedException('\DerpTest\Machinist\FindException');
+        $bp = new Blueprint(
+            $this->machinist,
+            'test_table'
+        );
+
+        Phake::when($this->store)
+            ->find(Phake::anyParameters())
+            ->thenReturn(array(array('a' => 1), array('a' => 2)));
+
+        $bp->findOne(array());
     }
 }
