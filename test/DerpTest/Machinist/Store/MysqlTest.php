@@ -13,6 +13,7 @@ class MysqlTest extends PHPUnit_Framework_TestCase
             $_ENV['MySQL_Store_User'],
             $_ENV['MySQL_Store_Password']);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->pdo->exec('SET foreign_key_checks = 0');
         $this->pdo->exec('CREATE DATABASE IF NOT EXISTS `machinist_test`;');
         $this->pdo->exec('USE `machinist_test`;');
         $this->pdo->exec('DROP TABLE IF EXISTS `stuff`;');
@@ -28,6 +29,17 @@ class MysqlTest extends PHPUnit_Framework_TestCase
 
         $this->pdo->exec('DROP TABLE IF EXISTS `nopk`;');
         $this->pdo->exec('create table `nopk` ( `id` INTEGER, `name` VARCHAR(255));');
+
+
+        $this->pdo->exec('DROP TABLE IF EXISTS `fkey`;');
+        $this->pdo->exec('CREATE TABLE `fkey` 
+                                        ( `id` int(11) NOT NULL AUTO_INCREMENT,
+                                          `stuff_id` int(11),
+                                          PRIMARY KEY (`id`),
+                                          KEY `IDX_1` (`stuff_id`),
+                                          CONSTRAINT `FK_1` FOREIGN KEY (`stuff_id`) REFERENCES `stuff` (`id`)
+                                        ) ENGINE=InnoDB');
+        $this->pdo->exec('SET foreign_key_checks = 1');
 
         $this->driver = SqlStore::fromPdo($this->pdo);
     }
@@ -118,6 +130,11 @@ class MysqlTest extends PHPUnit_Framework_TestCase
     public function testTruncatingGroup()
     {
         $this->driver->wipe('group', true);
+        $this->assertTrue(true); // if we didn't die, all is well
+    }
+
+    public function testTruncateWithForeignKeyConstraint() {
+        $this->driver->wipe('fkey', true);
         $this->assertTrue(true); // if we didn't die, all is well
     }
 

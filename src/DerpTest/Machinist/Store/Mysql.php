@@ -67,4 +67,20 @@ class Mysql extends SqlStore
     {
         return '`' . $column . '`';
     }
+
+    public function disableForeignKeyCheck() {
+        $this->pdo()->exec("SET foreign_key_checks = 0");
+    }
+
+    public function enableForeignKeyCheck() {
+        $this->pdo()->exec("SET foreign_key_checks = 1");
+    }
+
+    public function wipe($table, $truncate)
+    {
+        $this->disableForeignKeyCheck();
+        parent::wipe($table, $truncate);
+        $this->enableForeignKeyCheck();
+    }
 }
+
