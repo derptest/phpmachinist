@@ -30,7 +30,6 @@ class MysqlTest extends PHPUnit_Framework_TestCase
         $this->pdo->exec('DROP TABLE IF EXISTS `nopk`;');
         $this->pdo->exec('create table `nopk` ( `id` INTEGER, `name` VARCHAR(255));');
 
-
         $this->pdo->exec('DROP TABLE IF EXISTS `fkey`;');
         $this->pdo->exec('CREATE TABLE `fkey` 
                                         ( `id` int(11) NOT NULL AUTO_INCREMENT,

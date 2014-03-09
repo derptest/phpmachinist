@@ -99,4 +99,3 @@ class Mysql extends SqlStore
         }
     }
 }
-
