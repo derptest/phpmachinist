@@ -133,9 +133,16 @@ class MysqlTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(true); // if we didn't die, all is well
     }
 
-    public function testTruncateWithForeignKeyConstraint() {
+    public function testTruncateWithForeignKeyChecksEnabled() {
+        $this->pdo->exec('SET foreign_key_checks = 1');
         $this->driver->wipe('fkey', true);
-        $this->assertTrue(true); // if we didn't die, all is well
+        $this->assertTrue($this->driver->isForeignKeyChecksEnabled());
+    }
+
+    public function testTruncateWithForeignKeyChecksDisabled() {
+        $this->pdo->exec('SET foreign_key_checks = 0');
+        $this->driver->wipe('fkey', true);
+        $this->assertFalse($this->driver->isForeignKeyChecksEnabled());
     }
 
     public function testPrimaryKeyCachesResult()
