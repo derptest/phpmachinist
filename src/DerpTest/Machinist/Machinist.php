@@ -131,7 +131,7 @@ class Machinist
         if (!$bp instanceof Blueprint) {
             throw new \InvalidArgumentException("Invalid blue print {$bp}");
         }
-        return new \DerpTest\Machinist\relationship($bp);
+        return new \DerpTest\Machinist\Relationship($bp);
     }
 
     /**
