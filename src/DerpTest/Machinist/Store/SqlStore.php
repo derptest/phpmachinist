@@ -146,11 +146,11 @@ abstract class SqlStore implements Store
      */
     protected function getWipeQuery($table, $truncate)
     {
-        if ($truncate) {
-            $query = 'TRUNCATE TABLE ' . $this->quoteTable($table);
-        } else {
-            $query = 'DELETE FROM ' . $this->quoteTable($table);
-        }
+        $query = sprintf(
+            '%s %s',
+            $truncate ? 'TRUNCATE TABLE ' : 'DELETE FROM ',
+            $this->quoteTable($table)
+        );
         return $query;
     }
 }
