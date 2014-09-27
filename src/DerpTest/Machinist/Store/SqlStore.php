@@ -59,7 +59,12 @@ abstract class SqlStore implements Store
             $where[] = $this->quoteColumn($key) . " = ?";
             $values[] = $v;
         }
-        $query = $this->pdo()->prepare('SELECT * from ' . $this->quoteTable($table) . ' WHERE ' . join(' AND ', $where));
+        $sql = sprintf(
+            'SELECT * from %s WHERE %s',
+            $this->quoteTable($table),
+            join(' AND ', $where)
+        );
+        $query = $this->pdo()->prepare($sql);
         $query->execute($values);
         return $query->fetchAll(\PDO::FETCH_OBJ);
 
