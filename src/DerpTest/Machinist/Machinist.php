@@ -1,7 +1,7 @@
 <?php
 namespace DerpTest\Machinist;
 
-use DerpTest\Machinist\Store\Store;
+use DerpTest\Machinist\Store\StoreInterface;
 
 /**
  * Do things.. Machinary style.
@@ -40,7 +40,7 @@ class Machinist
         return $return;
     }
 
-    public function addStore(Store $store, $name)
+    public function addStore(StoreInterface $store, $name)
     {
         $this->stores[$name] = $store;
     }
@@ -48,7 +48,7 @@ class Machinist
     /**
      * @throws \InvalidArgumentException
      * @param string $name
-     * @return \DerpTest\Machinist\Store\Store
+     * @return \DerpTest\Machinist\Store\StoreInterface
      */
     public function getStore($name = 'default')
     {
@@ -136,10 +136,10 @@ class Machinist
 
     /**
      * Add the store with the provided name
-     * @param Store $store
+     * @param StoreInterface $store
      * @param string $name
      */
-    public static function store(Store $store, $name = 'default')
+    public static function store(StoreInterface $store, $name = 'default')
     {
         self::instance()->addStore($store, $name);
     }

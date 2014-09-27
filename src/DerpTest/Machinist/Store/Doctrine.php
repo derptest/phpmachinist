@@ -9,7 +9,7 @@ use Doctrine\ORM\Query;
  *
  * @author Adam L. Englander <adam.l.englander@gmail.com>
  */
-class Doctrine implements Store
+class Doctrine implements StoreInterface
 {
     /**
      * @var array

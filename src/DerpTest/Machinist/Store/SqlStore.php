@@ -5,7 +5,7 @@ namespace DerpTest\Machinist\Store;
  * Should provide *most* for the vendor agnostic functionality
  * for dealing with an SQL based store.
  */
-abstract class SqlStore implements Store
+abstract class SqlStore implements StoreInterface
 {
     protected $pdo;
 
@@ -111,7 +111,7 @@ abstract class SqlStore implements Store
      * @static
      * @throws \InvalidArgumentException
      * @param \PDO $pdo
-     * @return \DerpTest\Machinist\Store\Store
+     * @return \DerpTest\Machinist\Store\StoreInterface
      */
     public static function fromPdo(\PDO $pdo)
     {

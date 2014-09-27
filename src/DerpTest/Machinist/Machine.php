@@ -1,7 +1,7 @@
 <?php
 namespace DerpTest\Machinist;
 
-use DerpTest\Machinist\Store\Store;
+use DerpTest\Machinist\Store\StoreInterface;
 
 class Machine implements \ArrayAccess, \IteratorAggregate
 {
@@ -21,11 +21,11 @@ class Machine implements \ArrayAccess, \IteratorAggregate
     private $data;
 
     /**
-     * @param Store $store
+     * @param StoreInterface $store
      * @param string $table
      * @param array $row_data
      */
-    public function __construct(Store $store, $table, $row_data)
+    public function __construct(StoreInterface $store, $table, $row_data)
     {
         $this->store = $store;
         $this->table = $table;

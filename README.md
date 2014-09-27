@@ -23,7 +23,7 @@ Configuration of PHP Machinist happens in two steps:
 1. Register data stores
 
     Registering data stores is done via either the static `Machinist::store()` method or the
-`addStore()` method on a Machinist instance.  Both methods take the same parameters, a `Store`
+`addStore()` method on a Machinist instance.  Both methods take the same parameters, a `StoreInterface`
 instance and an optional name for that store.  If no name is given, it will default to `default`.
 Below is an example of both:
 
@@ -45,7 +45,7 @@ Below is an example of both:
 2. Define Blueprints
 
     Blueprints are what define the entities in your data store by allowing you to configure the following:
-    * The `Store` to use when saving or retrieving data for the blueprint
+    * The `StoreInterface` to use when saving or retrieving data for the blueprint
     * The table/collection in which the data will be stored
     * The default values for columns/properties in the table/collection.  Default values allow you to only
 deal with the data that is truly important to your test logic and not waste time and clutter your test code

@@ -6,7 +6,7 @@ class BlueprintTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @Mock
-     * @var \DerpTest\Machinist\Store\Store
+     * @var \DerpTest\Machinist\Store\StoreInterface
      */
     private $store;
 
