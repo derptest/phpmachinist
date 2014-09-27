@@ -73,7 +73,12 @@ abstract class SqlStore implements Store
     protected function findByPrimarykey($table, $key)
     {
         $primary_key = $this->primaryKey($table);
-        $query = $this->pdo()->prepare('SELECT * from ' . $this->quoteTable($table) . ' WHERE ' . $this->quoteColumn($primary_key) . ' = ?');
+        $sql = sprintf(
+            'SELECT * from %s WHERE %s = ?',
+            $this->quoteTable($table),
+            $this->quoteColumn($primary_key)
+        );
+        $query = $this->pdo()->prepare($sql);
         $query->execute(array($key));
         return $query->fetch(\PDO::FETCH_OBJ);
 
