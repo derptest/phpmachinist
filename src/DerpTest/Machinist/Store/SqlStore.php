@@ -83,11 +83,7 @@ abstract class SqlStore implements Store
      */
     public function wipe($table, $truncate)
     {
-        if ($truncate) {
-            $query = 'TRUNCATE TABLE ' . $this->quoteTable($table);
-        } else {
-            $query = 'DELETE FROM ' . $this->quoteTable($table);
-        }
+        $query = $this->getWipeQuery($table, $truncate);
         return $this->pdo->exec($query);
     }
 
@@ -131,4 +127,20 @@ abstract class SqlStore implements Store
         return $this->pdo()->quote($value);
     }
 
+    /**
+     * Get the query to wip the database
+     *
+     * @param string $table Table to wipe
+     * @param bool $truncate Use truncate as opposed to delete
+     * @return string Query
+     */
+    protected function getWipeQuery($table, $truncate)
+    {
+        if ($truncate) {
+            $query = 'TRUNCATE TABLE ' . $this->quoteTable($table);
+        } else {
+            $query = 'DELETE FROM ' . $this->quoteTable($table);
+        }
+        return $query;
+    }
 }
