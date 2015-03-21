@@ -112,20 +112,12 @@ class Doctrine implements StoreInterface
     public function wipe($table, $truncate)
     {
         $class_name = $this->resolveEntityName($table);
-        if ($truncate) {
-            $meta = $this->_em->getClassMetadata($class_name);
-            $table = $meta->getTableName();
-            $conn = $this->_em->getConnection();
-            $sql = $conn->getDatabasePlatform()->getTruncateTableSQL($table);
-            $conn->exec($sql);
-        } else {
-            $this->_em->getRepository($class_name)
-                ->createQueryBuilder('e')
-                ->delete()
-                ->getQuery()
-                ->execute();
+
+        $entities = $this->_em->getRepository($class_name)->findAll();
+        foreach ($entities as $entity) {
+            $this->_em->remove($entity);
         }
-        $this->_em->clear($class_name);
+        $this->_em->flush();
     }
 
     /**
