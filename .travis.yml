@@ -23,6 +23,7 @@ matrix:
   allow_failures:
   - env: DOCTRINE_ORM_VERSION=dev-master
   - php: nightly
+  - php: hhvm
 
 install: composer require "doctrine/orm:${DOCTRINE_ORM_VERSION}"
 
