@@ -42,6 +42,10 @@ Below is an example of both:
     );
     ```
 
+    Note: when using ```SqlStore::fromPdo``` the pdo error mode will be set.  It will default to exception such that
+    a test that triggers an error will throw an exception and fail.  This default behavior can be overridden by
+    passing an error mode as the second parameter of the factory method.
+
 2. Define Blueprints
 
     Blueprints are what define the entities in your data store by allowing you to configure the following:
