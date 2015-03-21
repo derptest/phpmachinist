@@ -27,7 +27,7 @@ abstract class SqlStore implements StoreInterface
     public function find($table, $data)
     {
         if (!is_array($data)) {
-            return $this->findByPrimarykey($table, $data);
+            return $this->findByPrimaryKey($table, $data);
         } else {
             return $this->findByColumnValues($table, $data);
         }
@@ -70,7 +70,7 @@ abstract class SqlStore implements StoreInterface
 
     }
 
-    protected function findByPrimarykey($table, $key)
+    protected function findByPrimaryKey($table, $key)
     {
         $primary_key = $this->primaryKey($table);
         $sql = sprintf(
@@ -109,12 +109,15 @@ abstract class SqlStore implements StoreInterface
     /**
      * Finds the correct SQLStore implementation based on a PDO connection.
      * @static
-     * @throws \InvalidArgumentException
+     *
      * @param \PDO $pdo
-     * @return \DerpTest\Machinist\Store\StoreInterface
+     * @param int $errorMode Error mode for the PDO instance (defaults to PDO::ERRMODE_EXCEPTION).
+     * @see http://php.net/manual/en/pdo.setattribute.php
+     * @return StoreInterface
      */
-    public static function fromPdo(\PDO $pdo)
+    public static function fromPdo(\PDO $pdo, $errorMode = \PDO::ERRMODE_EXCEPTION)
     {
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, $errorMode);
         $driver = $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
         switch ($driver) {
             case 'sqlite':
@@ -124,7 +127,7 @@ abstract class SqlStore implements StoreInterface
                 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'Mysql.php');
                 return new \DerpTest\Machinist\Store\Mysql($pdo);
             default:
-                throw new \InvalidArgumentException("Unsupported PDO drive {$driver}.");
+                throw new \InvalidArgumentException("Unsupported PDO driver {$driver}.");
         }
     }
 
