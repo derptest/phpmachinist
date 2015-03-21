@@ -17,16 +17,14 @@ env:
   - DOCTRINE_ORM_VERSION=dev-master
 
 matrix:
+  exclude:
+  - php: 5.3
+    env: DOCTRINE_ORM_VERSION=dev-master
   allow_failures:
-  - env: DOCTRINE_ORM_VERSION=~dev-master
-  - php: hhvm
+  - env: DOCTRINE_ORM_VERSION=dev-master
   - php: nightly
 
-install:
-- composer selfupdate
-- composer install --no-interaction
-
-before_script: composer require "doctrine/orm:${DOCTRINE_ORM_VERSION}"
+install: composer require "doctrine/orm:${DOCTRINE_ORM_VERSION}"
 
 script: vendor/bin/phpunit
 
