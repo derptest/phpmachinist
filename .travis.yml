@@ -4,6 +4,33 @@ php:
   - 5.3
   - 5.4
   - 5.5
+  - 5.6
+  - hhvm
+  - nightly
 
-before_script:
-  - composer selfupdate && composer install --no-interaction
+env:
+  matrix:
+  - DOCTRINE_ORM_VERSION=~2.1.0
+  - DOCTRINE_ORM_VERSION=~2.2.0
+  - DOCTRINE_ORM_VERSION=~2.3.0
+  - DOCTRINE_ORM_VERSION=~2.4.0
+  - DOCTRINE_ORM_VERSION=dev-master
+
+matrix:
+  allow_failures:
+  - env: DOCTRINE_ORM_VERSION=~dev-master
+  - php: hhvm
+  - php: nightly
+
+install:
+- composer selfupdate
+- composer install --no-interaction
+
+before_script: composer require "doctrine/orm:${DOCTRINE_ORM_VERSION}"
+
+script: vendor/bin/phpunit
+
+notifications:
+  email:
+    recipients:
+      secure: GB+W4AQDJv8WkRp2L9C36ukQxFkMXZ0Z8Qe18hIUdTrjn+aK9ywj/jnDTIKIPKNxyh+9Zql2PoacQN8HArKpztcWYBuwpWos1Lk6pJwTzLuTO7XzatC+x80K9SOud4NC+ALQI1onfP07yjkftSRbwzpI5h+AydQIPNuKiN4BVkA=
