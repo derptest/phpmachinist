@@ -14,14 +14,22 @@ env:
   - DOCTRINE_ORM_VERSION=~2.2.0
   - DOCTRINE_ORM_VERSION=~2.3.0
   - DOCTRINE_ORM_VERSION=~2.4.0
-  - DOCTRINE_ORM_VERSION=dev-master
 
 matrix:
   exclude:
-  - php: 5.3
-    env: DOCTRINE_ORM_VERSION=dev-master
+  - php hhvm
+    DOCTRINE_ORM_VERSION=~2.1.0
+  - php hhvm
+    DOCTRINE_ORM_VERSION=~2.2.0
+  - php hhvm
+    DOCTRINE_ORM_VERSION=~2.3.0
+  - php nightly
+    DOCTRINE_ORM_VERSION=~2.1.0
+  - php nightly
+    DOCTRINE_ORM_VERSION=~2.2.0
+  - php nightly
+    DOCTRINE_ORM_VERSION=~2.3.0
   allow_failures:
-  - env: DOCTRINE_ORM_VERSION=dev-master
   - php: nightly
   - php: hhvm
 
