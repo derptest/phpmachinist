@@ -17,18 +17,18 @@ env:
 
 matrix:
   exclude:
-  - php hhvm
-    DOCTRINE_ORM_VERSION=~2.1.0
-  - php hhvm
-    DOCTRINE_ORM_VERSION=~2.2.0
-  - php hhvm
-    DOCTRINE_ORM_VERSION=~2.3.0
-  - php nightly
-    DOCTRINE_ORM_VERSION=~2.1.0
-  - php nightly
-    DOCTRINE_ORM_VERSION=~2.2.0
-  - php nightly
-    DOCTRINE_ORM_VERSION=~2.3.0
+  - php: hhvm
+    env: DOCTRINE_ORM_VERSION=~2.1.0
+  - php: hhvm
+    env: DOCTRINE_ORM_VERSION=~2.2.0
+  - php: hhvm
+    env: DOCTRINE_ORM_VERSION=~2.3.0
+  - php: nightly
+    env: DOCTRINE_ORM_VERSION=~2.1.0
+  - php: nightly
+    env: DOCTRINE_ORM_VERSION=~2.2.0
+  - php: nightly
+    env: DOCTRINE_ORM_VERSION=~2.3.0
   allow_failures:
   - php: nightly
   - php: hhvm
