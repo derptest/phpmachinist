@@ -57,7 +57,8 @@ class Sqlite extends SqlStore
     protected function columns($table)
     {
         if (!isset($this->column_dict[$table])) {
-            $stmt = $this->pdo->query("PRAGMA table_info($table)");
+            $stmt = $this->pdo->prepare("PRAGMA table_info($table)");
+            $stmt->execute();
             $columns = array();
             while ($row = $stmt->fetch()) {
                 $columns[] = $row['name'];

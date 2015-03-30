@@ -13,6 +13,20 @@ several projects:
 
 They're totally awesome. Just either in the wrong language, or didn't quite do what I wanted.
 
+## Hip Hop VM (HHVM) Support
+
+Hip Hop VM is supported and tested.  If you want to use the Doctrine store, it will require Doctrine ORM 2.4.x or
+newer.
+
+## Data Store Support
+
+The following data stores are currently supported:
+
+* PDO
+    * MySQL
+    * SQLite
+* Doctrine 2 ORM
+
 ## Install
 Add the package derptest/phpmachinist to your composer.json
 For more information about Composer, please visit http://getcomposer.org

@@ -3,7 +3,10 @@
     "description": "Testing object factory for PHP",
     "license": "MIT",
     "type": "library",
-    "keywords": ["machinist", "php", "test", "object", "factory", "blueprint"],
+    "keywords": [
+      "machinist", "php", "test", "object", "factory", "blueprint", "doctrine", "phpunit", "pdo", "mysql", "sqlite",
+      "hhvm", "hip hop", "fixtures"
+    ],
     "authors": [
         {
             "name": "Stephan Soileau",
@@ -11,7 +14,6 @@
         },
         {
             "name": "Adam Englander",
-            "homepage": "http://adamknowsstuff.com",
             "role": "Developer"
         }
     ],
@@ -22,7 +24,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "3.2.x-dev"
         }
     },
     "require": {

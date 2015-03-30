@@ -29,7 +29,8 @@ class Mysql extends SqlStore
     public function primaryKey($table)
     {
         if (!isset($this->key_dict[$table])) {
-            $stmt = $this->pdo()->query("SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY'");
+            $stmt = $this->pdo()->prepare("SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY'");
+            $stmt->execute();
             $results = array();
             while ($row = $stmt->fetch(\PDO::FETCH_OBJ)) {
                 $results[] = $row->Column_name;
@@ -48,7 +49,8 @@ class Mysql extends SqlStore
     protected function columns($table)
     {
         if (!isset($this->column_dict[$table])) {
-            $stmt = $this->pdo()->query("DESCRIBE `$table`");
+            $stmt = $this->pdo()->prepare("DESCRIBE `$table`");
+            $stmt->execute();
             $columns = array();
             while ($row = $stmt->fetch()) {
                 $columns[] = $row['Field'];
@@ -69,7 +71,8 @@ class Mysql extends SqlStore
     }
 
     public function isForeignKeyChecksEnabled() {
-        $stmt = $this->pdo()->query("SELECT @@foreign_key_checks");
+        $stmt = $this->pdo()->prepare("SELECT @@foreign_key_checks");
+        $stmt->execute();
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         return ($row['@@foreign_key_checks'] == "1");
