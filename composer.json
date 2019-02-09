@@ -33,7 +33,7 @@
     "require-dev": {
         "ext-pdo_mysql": "*",
         "ext-pdo_sqlite": "*",
-        "phake/phake": "~2.0",
+        "phake/phake": "~2.0.2",
         "doctrine/orm": "~2.0",
         "phpunit/phpunit": "~4.5"
     }
